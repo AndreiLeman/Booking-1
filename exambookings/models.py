@@ -110,46 +110,56 @@ class Booking(models.Model):
         )
 
     # studentProfile = models.ForeignKey(StudentProfile)
-    studentFirstName = models.CharField(max_length=30)
-    studentLastName = models.CharField(max_length=30)
+    studentFirstName = models.CharField(max_length=30,
+                                        verbose_name="Student's First Name")
+    studentLastName = models.CharField(max_length=30,
+                                       verbose_name="Student's Last Name")
     studentGrade = models.IntegerField(choices=STUDENT_GRADE_CHOICES,
-                                       default=GRADE_TEN)
+                                       default=GRADE_TEN,
+                                       verbose_name="Student's Grade")
     
     # course = models.ForeignKey(Course)
-    testCourseName = models.CharField(max_length=40)
+    testCourseName = models.CharField(max_length=40,
+                                      verbose_name="Course Name")
+
+    # courseTeacherProfile = models.ForeignKey(StaffProfile)
+    courseTeacher = models.ForeignKey(User,
+                                      verbose_name="Course Teacher")
     
     # test = models.ForeignKey(Test)
-    testName = models.CharField(max_length=40)
-    testDate = models.DateField()
-    testDuration = models.CharField(max_length=40)
+    testName = models.CharField(max_length=40,
+                                verbose_name="Test Name")
+    testDuration = models.CharField(max_length=40,
+                                    verbose_name="Test Duration")
+    testDate = models.DateField(verbose_name="Test on Date")    
+
+    # workPeriod = models.ForeignKey(WorkPeriod)
+    testPeriod = models.IntegerField(choices=TEST_PERIOD_CHOICES,
+                                     default=PERIOD_AFTERSCHOOL,
+                                     verbose_name="Test in Period")
     
     # examCenter = models.ForeignKey(ExamCenter)
     examCenter = models.CharField(max_length=5,
                                   choices=EXAM_CENTER_CHOICES,
-                                  default=EXAM_CENTER_RM_100)
-    
-    # courseTeacherProfile = models.ForeignKey(StaffProfile)
-    courseTeacher = models.ForeignKey(User)
-    
-    # workPeriod = models.ForeignKey(WorkPeriod)
-    testPeriod = models.IntegerField(choices=TEST_PERIOD_CHOICES,
-                                     default=PERIOD_AFTERSCHOOL)
+                                  default=EXAM_CENTER_RM_100,
+                                  verbose_name="Exam Room")
+
 
     # accomodations
-    extendedTimeAccomodation = models.BooleanField()
-    computerAccomodation = models.BooleanField()
-    scribeAccomodation = models.BooleanField()
-    enlargementsAccomodation = models.BooleanField()
-    readerAccomodation = models.BooleanField()
-    isolationQuietAccomodation = models.BooleanField()
+    extendedTimeAccomodation = models.BooleanField(verbose_name="Extended Time")
+    computerAccomodation = models.BooleanField(verbose_name="Computer")
+    scribeAccomodation = models.BooleanField(verbose_name="Scribe")
+    enlargementsAccomodation = models.BooleanField(verbose_name="Enlargements")
+    readerAccomodation = models.BooleanField(verbose_name="Reader")
+    isolationQuietAccomodation = models.BooleanField(verbose_name="Isolation/Quiet")
 
     # allowances
-    ellDictionaryAllowance = models.BooleanField()
-    calculatorManipulativesAllowance = models.BooleanField()
-    openBookNotesAllowance = models.BooleanField()
-    computerInternetAllowance = models.BooleanField()
-    englishDictionaryThesaurusAllowance = models.BooleanField()
-    otherAllowances = models.CharField(max_length=200, blank=True)
+    ellDictionaryAllowance = models.BooleanField(verbose_name="ELL Dictionary")
+    calculatorManipulativesAllowance = models.BooleanField(verbose_name="Calculator/Manipulatives")
+    openBookNotesAllowance = models.BooleanField(verbose_name="Open book/Notes")
+    computerInternetAllowance = models.BooleanField(verbose_name="Computer/Internet")
+    englishDictionaryThesaurusAllowance = models.BooleanField(verbose_name="ELL Dictionary/Thesaurus")
+    otherAllowances = models.CharField(max_length=200, blank=True, verbose_name="Other Allowances")
 
     class Meta:
         permissions = (
