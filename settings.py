@@ -149,6 +149,7 @@ INSTALLED_APPS = (
     'guardian',
     'easy_thumbnails',
     'profiles',
+    'widget_tweaks',
 )
 
 # A sample logging configuration. The only tangible logging
