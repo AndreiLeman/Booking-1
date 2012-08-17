@@ -14,14 +14,17 @@ from exambookings.forms import CreateBookingForm
 from exambookings.viewsHelpers import reverse_lazy, StaffOnlyViewMixin
 
 class CreateBooking(StaffOnlyViewMixin, CreateView):
-    model = Booking
+#    model = Booking
 #    template_name_suffix = "_create_form" # looks for template "booking_create_form.html"
-    context_object_name = "create_booking"
+#    context_object_name = "create_booking"
     template_name = 'exambookings/make_a_booking.html'
+    form_class = CreateBookingForm
+    success_url = reverse_lazy('showBookings')
 
-    def render_to_response(self, context, **response_kwargs):
-        #return django.shortcuts.render_to_response('exambookings/make_a_booking.html', {})
-        return super(CreateBooking, self).render_to_response(context, **response_kwargs)
+    # def render_to_response(self, context, **response_kwargs):
+    #     #return django.shortcuts.render_to_response('exambookings/make_a_booking.html', {})
+    #     context['forma'] = CreateBookingForm()
+    #     return super(CreateBooking, self).render_to_response(context, **response_kwargs)
         
 
 class ShowBookings(StaffOnlyViewMixin, ListView):
