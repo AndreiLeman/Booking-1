@@ -59,10 +59,10 @@ def booking(request):
 
 def home_page(request):
     if request.user.is_authenticated():
-        return HttpResponseRedirect(reverse('showBookings'))
+        return HttpResponseRedirect(reverse('booking'))
     return signin(request,
                   template_name='exambookings/home.html',
-                  extra_context={'redirect_to':reverse('showBookings'),})
+                  extra_context={'redirect_to':reverse('booking'),})
 
 
 def team_bio(request):
