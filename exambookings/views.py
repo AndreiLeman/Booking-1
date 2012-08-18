@@ -53,6 +53,13 @@ class ShowBookings(StaffOnlyViewMixin, ListView):
                  "workPeriod": booking.testPeriod })
         return bookings_list
         
+from userena.views import signin
+def home_page(request):
+    if request.user.is_authenticated():
+        return HttpResponseRedirect(reverse('showBookings'))
+    return signin(request,
+                  template_name='exambookings/home.html',
+                  extra_context={'redirect_to':reverse('showBookings'),})
 @login_required
 def static_page(request, file_name):
     return render_to_response('exambookings/static_pages/'+file_name, {})

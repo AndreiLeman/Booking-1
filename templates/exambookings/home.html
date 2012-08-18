@@ -1,3 +1,4 @@
+{% load widget_tweaks %}
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -74,31 +75,30 @@
 
             </div>
             <div class="sixcol last right_col">
-                <form id="form1" name="form1" method="post" action="">
-
-                    <p>&nbsp;</p>
-                    <label class="signInFieldLabel" for="userName">Log-In</label>
-                    <p>&nbsp;</p>
-                    <p>&nbsp;</p>
-
-                    <label class="signInFieldLabel" for="userName">UserName:</label>
-                    <input class="signInFieldInput" type="text" name="userName" id="userName" />
-
-                    <p>&nbsp;</p>
-
-                    <label class="signInFieldLabel" for="passWord">Password:</label>
-                    <input class="signInFieldInput" type="password" size="25" name="passWord" id="passWord" />
-
-
-
-                    <p>&nbsp;</p>
-                    <div class="submit">
-                        <p>
-                            <label>
-                                <input type="submit" name="Submit" id="Submit" value="Submit" />
-                            </label>
-                        </p>
-                    </div>
+                <form id="id_signInForm" name="signInForm" method="post" action="">
+		  {% csrf_token %}
+		  {{ form.non_field_errors }}
+		  <p>&nbsp;</p>
+                  <label class="signInFieldLabel" for="userName">Log-In</label>
+                  <p>&nbsp;</p>
+    {% for field in form %}
+    {{ field.errors }}
+    {% comment %} Displaying checkboxes differently {% endcomment %}
+    <p>
+    <label class="signInFieldLabel" for="id_{{ field.html_name }}">{{ field.label }}</label>
+    {{ field|add_class:'signInFieldInput' }}
+    </p>
+    {% endfor %}
+    <input type="hidden" name="next" value="{{ redirect_to }}" />
+                  <p>&nbsp;</p>
+                  <p>&nbsp;</p>
+                  <div class="submit">
+                    <p>
+                      <label>
+			<input type="submit" name="Submit" id="Submit" value="Submit" />			
+                      </label>
+                    </p>
+                  </div>
                 </form>
 
                 <form id="form2" name="form2" method="post" action="">

@@ -9,6 +9,9 @@ from exambookings.views import ShowBookings, CreateBooking
 
 
 urlpatterns = patterns('',
+                       url(r'^home/$',
+                           'exambookings.views.home_page',
+                           name='home'),
     url(r'^show_bookings/$',
         ShowBookings.as_view(),
         name='showBookings'),
