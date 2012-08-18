@@ -7,6 +7,12 @@ from django.contrib.auth.decorators import user_passes_test
 def any_permission_required(*perms):
     return user_passes_test(lambda u: any(u.has_perm(perm) for perm in perms))
 
+def staff_only_view(function=None):
+    actual_decorator = any_permission_required('exambookings.teacher_view', 'exambookings.exam_center_view')
+    if function:
+        return actual_decorator(function)
+    return actual_decorator
+
 from django.utils.decorators import method_decorator
 class StaffOnlyViewMixin(object):
     @method_decorator(any_permission_required('exambookings.teacher_view', 'exambookings.exam_center_view'))
