@@ -21,6 +21,21 @@ class CreateBooking(StaffOnlyViewMixin, CreateView):
     form_class = CreateBookingForm
     success_url = reverse_lazy('showBookings')
 
+    def get_initial(self):
+        """ this will set the initial value in the form, but
+        if form excludes this field, then when form is processed
+        courseTeacher field would not be set and can't be saved
+        into the database.  See form_valid instead.
+        """
+        return {'courseTeacher': self.request.user,}
+
+    def form_valid(self, form):
+        # This method is called when valid form data has been POSTed.
+        # It should return an HttpResponse.        
+        form.instance.courseTeacher = self.request.user
+        return super(CreateBooking, self).form_valid(form)
+
+
     # def render_to_response(self, context, **response_kwargs):
     #     #return django.shortcuts.render_to_response('exambookings/make_a_booking.html', {})
     #     context['forma'] = CreateBookingForm()

@@ -166,6 +166,15 @@ class Booking(models.Model):
             ("teacher_view", "Can view teacher's own bookings"),
             ("exam_center_view", "Can view all bookings"),
             )
+        verbose_name = "Exam Appointment"
+        unique_together = (('studentFirstName',
+                            'studentLastName',
+                            'studentGrade',
+                            'testCourseName',
+                            'courseTeacher',
+                            'testName',
+                            'testDate',
+                            'testPeriod',),)
         
 
 #Relations
