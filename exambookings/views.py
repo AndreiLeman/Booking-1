@@ -13,30 +13,12 @@ from userena.views import signin
 from django.core.urlresolvers import reverse
 from exambookings.viewsHelpers import reverse_lazy, staff_only_view
 
-
-@staff_only_view
-def create_booking(request):
-    ctx = {}
-    ctx.update(csrf(request))
-    
-    form = CreateBookingForm()
-    if request.method == 'POST':
-        form = CreateBookingForm(request.POST, request.FILES)
-        if form.is_valid():
-            form.instance.courseTeacher = request.user
-            form.save()
-            return HttpResponseRedirect(reverse('showBookings'))
-    
-    ctx['form'] = form
-    return render_to_response('exambookings/make_a_booking.html', ctx)
-
-
-@staff_only_view
-def show_bookings(request):
-    if (request.user.has_perm('exambookings.exam_center_view')):
+def bookings_list_for(user):
+    """ returns dictionary of bookings the user can view """
+    if (user.has_perm('exambookings.exam_center_view')):
         bookings = Booking.objects.all()
-    elif (request.user.has_perm('exambookings.teacher_view')):
-        bookings = Booking.objects.filter(courseTeacher=request.user)
+    elif (user.has_perm('exambookings.teacher_view')):
+        bookings = Booking.objects.filter(courseTeacher=user)
     else:
         bookings = []
         
@@ -51,8 +33,28 @@ def show_bookings(request):
              "courseTeacher": '' + booking.courseTeacher.first_name + ' ' + booking.courseTeacher.last_name,
              "workPeriod": booking.testPeriod })
 
-    return render_to_response('exambookings/bookings_list.html',
-                              {'bookings_list': bookings_list,})
+    return bookings_list
+
+
+@staff_only_view
+def booking(request):
+    """ shows bookings available to be seen by logged-in user
+    also provides a form to create a new booking appointment
+    """
+    ctx = {}
+    ctx.update(csrf(request))
+    ctx['bookings_list'] = bookings_list_for(request.user)
+    
+    form = CreateBookingForm()
+    if request.method == 'POST':
+        form = CreateBookingForm(request.POST, request.FILES)
+        form.instance.courseTeacher = request.user
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(reverse('booking'))
+    
+    ctx['form'] = form
+    return render_to_response('exambookings/booking.html', ctx)
 
 
 def home_page(request):
