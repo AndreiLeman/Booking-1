@@ -11,7 +11,9 @@ from django.views.generic.edit import CreateView
 from exambookings.models import Booking
 from exambookings.forms import CreateBookingForm
 
-from exambookings.viewsHelpers import reverse_lazy, StaffOnlyViewMixin
+from django.core.urlresolvers import reverse
+from exambookings.viewsHelpers import reverse_lazy, StaffOnlyViewMixin, staff_only_view
+
 
 class CreateBooking(StaffOnlyViewMixin, CreateView):
 #    model = Booking
@@ -40,34 +42,30 @@ class CreateBooking(StaffOnlyViewMixin, CreateView):
     #     #return django.shortcuts.render_to_response('exambookings/make_a_booking.html', {})
     #     context['forma'] = CreateBookingForm()
     #     return super(CreateBooking, self).render_to_response(context, **response_kwargs)
+
+@staff_only_view
+def show_bookings(request):
+    if (request.user.has_perm('exambookings.exam_center_view')):
+        bookings = Booking.objects.all()
+    elif (request.user.has_perm('exambookings.teacher_view')):
+        bookings = Booking.objects.filter(courseTeacher=request.user)
+    else:
+        bookings = []
         
+    bookings_list = []
+    for booking in bookings:
+        bookings_list.append(
+            {"studentFirstName": booking.studentFirstName,
+             "studentLastName": booking.studentLastName,
+             "course": booking.testCourseName,
+             "test": booking.testName,
+             "examCenter": booking.examCenter,
+             "courseTeacher": '' + booking.courseTeacher.first_name + ' ' + booking.courseTeacher.last_name,
+             "workPeriod": booking.testPeriod })
 
-class ShowBookings(StaffOnlyViewMixin, ListView):
-    model = Booking
-    context_object_name="bookings_list"
-    template_name = 'exambookings/bookings_list.html'
+    return render_to_response('exambookings/bookings_list.html',
+                              {'bookings_list': bookings_list,})
 
-    def get_queryset(self):
-        if (self.request.user.has_perm('exambookings.exam_center_view')):
-            bookings = Booking.objects.all()
-        elif (self.request.user.has_perm('exambookings.teacher_view')):
-            #theStaffBaseProfile = get_object_or_404(BaseProfile, emailAddress__exact=self.request.user.email)
-            bookings = Booking.objects.filter(courseTeacher=self.request.user)
-        else:
-            bookings = []
-
-        bookings_list = []
-        for booking in bookings:
-            bookings_list.append(
-                {"studentFirstName": booking.studentFirstName,
-                 "studentLastName": booking.studentLastName,
-                 "course": booking.testCourseName,
-                 "test": booking.testName,
-                 "examCenter": booking.examCenter,
-                 "courseTeacher": '' + booking.courseTeacher.first_name + ' ' + booking.courseTeacher.last_name,
-                 "workPeriod": booking.testPeriod })
-        return bookings_list
-        
 from userena.views import signin
 def home_page(request):
     if request.user.is_authenticated():
