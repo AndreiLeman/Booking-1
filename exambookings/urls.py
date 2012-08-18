@@ -3,11 +3,6 @@
 from django.conf import settings
 from django.conf.urls.static import static
 
-from django.views.generic import DetailView, ListView
-#from exambookings.models import Poll
-from exambookings.views import ShowBookings, CreateBooking
-
-
 urlpatterns = patterns('',
                        url(r'^home/$',
                            'exambookings.views.home_page',
@@ -22,7 +17,8 @@ urlpatterns = patterns('',
                            'exambookings.views.show_bookings',
                            name='showBookings'),
                        url(r'^create_booking/$',
-                           CreateBooking.as_view()),
+                           'exambookings.views.create_booking',
+                           name='createBooking'),
                        url(r'^static_page/(?P<file_name>.*\.html)$',
                            'exambookings.views.static_page'), # test out way to serve static page as though it were dynamic
 ) + static(settings.STATIC_URL, document_root='exambookings/static/')
