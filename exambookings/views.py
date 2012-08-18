@@ -60,8 +60,12 @@ def home_page(request):
     return signin(request,
                   template_name='exambookings/home.html',
                   extra_context={'redirect_to':reverse('showBookings'),})
+
+def team_bio(request):
+    return render_to_response('exambookings/static_pages/team_bio.html', {})
+
+
 @login_required
 def static_page(request, file_name):
     return render_to_response('exambookings/static_pages/'+file_name, {})
-
 
