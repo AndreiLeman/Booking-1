@@ -8,8 +8,7 @@ from django.core.context_processors import csrf
 
 from exambookings.models import Booking
 from exambookings.forms import CreateBookingForm
-from userena.views import signin
-import userena
+import userena.views
 
 from django.core.urlresolvers import reverse
 from exambookings.viewsHelpers import reverse_lazy, staff_only_view

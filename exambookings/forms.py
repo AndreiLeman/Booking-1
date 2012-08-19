@@ -1,7 +1,7 @@
-from django import forms
+from django import forms as dforms
 from exambookings.models import Booking
 
-class CreateBookingForm(forms.ModelForm):
+class CreateBookingForm(dforms.ModelForm):
     class Meta:
         model = Booking
         exclude = ('courseTeacher',)
