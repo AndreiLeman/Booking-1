@@ -71,6 +71,7 @@
 	      <p style="font-size:24pt;">UPDATE</p>
               <form id="form1" name="form1" method="post" action="">
 		{% csrf_token %}
+		{{ form.non_field_errors }}
 		{% include "exambookings/form_hidden_fields.html" %}
 
 		{% for field in form %}
