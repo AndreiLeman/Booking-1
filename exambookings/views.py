@@ -73,13 +73,23 @@ def create_booking_view(request):
 @staff_only_view
 def update_booking_view(request, pk):
     ctx = create_standard_csrf_context(request)
-    if request.user.has_perm('exambookings.exam_center_view'):
-        ctx['exam_center_view'] = True
     ctx['bookings_list'] = bookings_list_for(request.user)
+    
+    if request.user.has_perm('exambookings.exam_center_view'):
+        exam_center_view = True
+        ctx['exam_center_view'] = True
+    else:
+        exam_center_view = False
 
     appt = get_object_or_404(Booking, id__iexact=pk)
     if request.method == 'POST':
-        form = UpdateBookingForm(request.POST, instance=appt)
+        if not exam_center_view:
+            post = request.POST.copy()
+            post.setlist('courseTeacher', [request.user.pk])
+            form = UpdateBookingForm(post, instance=appt)
+        else:
+            form = UpdateBookingForm(request.POST, instance=appt)
+        
         if form.is_valid():
             form.save()
             return HttpResponseRedirect(reverse('update_booking', kwargs={'pk':pk}))
