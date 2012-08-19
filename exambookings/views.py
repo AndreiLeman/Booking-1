@@ -34,18 +34,34 @@ def bookings_list_for(user):
         bookings = Booking.objects.filter(courseTeacher=user)
     else:
         bookings = []
-        
-    bookings_list = []
+
+    bookings_list = []    
     for booking in bookings:
         bookings_list.append(
             {"studentFirstName": booking.studentFirstName,
              "studentLastName": booking.studentLastName,
-             "course": booking.testCourseName,
-             "test": booking.testName,
-             "examCenter": booking.examCenter,
+             'studentGrade': booking.studentGrade,
+             "testCourseName": booking.testCourseName,
              "courseTeacher": '' + booking.courseTeacher.first_name + ' ' + booking.courseTeacher.last_name,
-             "workPeriod": booking.testPeriod,
-             'editUrl':reverse('update_booking', kwargs={'pk':booking.pk})})
+             'testName': booking.testName,
+             'testDuration': booking.testDuration,
+             'testDate': booking.testDate,
+             "testPeriod": booking.testPeriod,
+             "examCenter": booking.examCenter,
+             'extendedTimeAccomodation': booking.extendedTimeAccomodation,
+             'computerAccomodation': booking.computerAccomodation,
+             'scribeAccomodation': booking.scribeAccomodation,
+             'enlargementsAccomodation': booking.enlargementsAccomodation,
+             'readerAccomodation': booking.readerAccomodation,
+             'isolationQuietAccomodation': booking.isolationQuietAccomodation,
+
+             'ellDictionaryAllowance': booking.ellDictionaryAllowance,
+             'calculatorManipulativesAllowance': booking.calculatorManipulativesAllowance,
+             'openBookNotesAllowance': booking.openBookNotesAllowance,
+             'computerInternetAllowance': booking.computerInternetAllowance,
+             'englishDictionaryThesaurusAllowance': booking.englishDictionaryThesaurusAllowance,
+             'otherAllowances': booking.otherAllowances,
+             'editUrl':reverse('update_booking', kwargs={'pk':booking.pk})}) ## TODO: make this list complete, then display it prettily
 
     return bookings_list
 
