@@ -50,7 +50,7 @@ def bookings_list_for(user):
 
 
 @staff_only_view
-def booking_view(request):
+def create_booking_view(request):
     """ shows bookings available to be seen by logged-in user
     also provides a form to create a new booking appointment
     """
@@ -63,7 +63,7 @@ def booking_view(request):
         form.instance.courseTeacher = request.user
         if form.is_valid():
             form.save()
-            return HttpResponseRedirect(reverse('booking'))
+            return HttpResponseRedirect(reverse('create_booking'))
     
     ctx['form'] = form
     return render_to_response('exambookings/booking.html', ctx)
@@ -105,10 +105,10 @@ def sign_out_view(request):
 
 def home_page_view(request):
     if request.user.is_authenticated():
-        return HttpResponseRedirect(reverse('booking'))
+        return HttpResponseRedirect(reverse('create_booking'))
 
     ctx = create_standard_context(request)
-    ctx['redirect_to'] = reverse('booking')
+    ctx['redirect_to'] = reverse('create_booking')
     return userena.views.signin(request,
                                 template_name='exambookings/home.html',
                                 extra_context=ctx,
