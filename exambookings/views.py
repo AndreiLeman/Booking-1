@@ -26,7 +26,31 @@ def create_standard_csrf_context(request):
     ctx.update(csrf(request))
     return ctx
 
-def bookings_list_for(user):
+
+BOOKING_fieldNames_ordered = ["studentFirstName",
+                              "studentLastName",
+                              'studentGrade',
+                              "testCourseName",
+                              "courseTeacher",
+                              'testName',
+                              'testDuration',
+                              'testDate',
+                              "testPeriod",
+                              "examCenter",
+                              'extendedTimeAccomodation',
+                              'computerAccomodation',
+                              'scribeAccomodation',
+                              'enlargementsAccomodation',
+                              'readerAccomodation',
+                              'isolationQuietAccomodation',
+                              'ellDictionaryAllowance',
+                              'calculatorManipulativesAllowance',
+                              'openBookNotesAllowance',
+                              'computerInternetAllowance',
+                              'englishDictionaryThesaurusAllowance',
+                              'otherAllowances']
+
+def bookings_list_for(user, incl_false_bool_fields = False):
     """ returns dictionary of bookings the user can view """
     if (user.has_perm('exambookings.exam_center_view')):
         bookings = Booking.objects.all()
@@ -35,35 +59,19 @@ def bookings_list_for(user):
     else:
         bookings = []
 
-    fieldNames = ["studentFirstName",
-                  "studentLastName",
-                  'studentGrade',
-                  "testCourseName",
-                  "courseTeacher",
-                  'testName',
-                  'testDuration',
-                  'testDate',
-                  "testPeriod",
-                  "examCenter",
-                  'extendedTimeAccomodation',
-                  'computerAccomodation',
-                  'scribeAccomodation',
-                  'enlargementsAccomodation',
-                  'readerAccomodation',
-                  'isolationQuietAccomodation',
-                  'ellDictionaryAllowance',
-                  'calculatorManipulativesAllowance',
-                  'openBookNotesAllowance',
-                  'computerInternetAllowance',
-                  'englishDictionaryThesaurusAllowance',
-                  'otherAllowances']
     bookings_list = []
     for booking in bookings:
-        bookingData = {'editUrl':reverse('update_booking',
-                                         kwargs={'pk':booking.pk})}
-        for fieldname in fieldNames:
-            bookingData.update({fieldname: booking.fieldDataOf(fieldname)})
-        
+        bookingData = {'editUrl':{'value':reverse('update_booking',
+                                                  kwargs={'pk':booking.pk}),
+                                  'verbose_name': "Edit Link",
+                                  'help_text': '',
+                                  'name': 'editUrl'}}
+        for fieldname in BOOKING_fieldNames_ordered:
+            fieldData = booking.fieldDataOf(fieldname)
+            if incl_false_bool_fields or fieldData['value'] != False:
+                bookingData.update({fieldname: fieldData})
+                    
+            # note bookingData is an unordered dictionary!
         bookings_list.append(bookingData)
     return bookings_list
 
