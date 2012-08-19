@@ -113,7 +113,7 @@ class Booking(models.Model):
     studentFirstName = models.CharField(max_length=30,
                                         verbose_name="Student's First Name")
     studentLastName = models.CharField(max_length=30,
-                                       verbose_name="Student's Last Name")
+                                       verbose_name="Student's Last Name (Initial)")
     studentGrade = models.IntegerField(choices=STUDENT_GRADE_CHOICES,
                                        default=GRADE_TEN,
                                        verbose_name="Student's Grade")
