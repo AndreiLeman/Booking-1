@@ -44,7 +44,8 @@ def bookings_list_for(user):
              "test": booking.testName,
              "examCenter": booking.examCenter,
              "courseTeacher": '' + booking.courseTeacher.first_name + ' ' + booking.courseTeacher.last_name,
-             "workPeriod": booking.testPeriod })
+             "workPeriod": booking.testPeriod,
+             'editUrl':reverse('update_booking', kwargs={'pk':booking.pk})})
 
     return bookings_list
 
