@@ -37,7 +37,7 @@ def bookings_list_for(user):
 
 
 @staff_only_view
-def booking(request):
+def booking_view(request):
     """ shows bookings available to be seen by logged-in user
     also provides a form to create a new booking appointment
     """
@@ -57,7 +57,7 @@ def booking(request):
     return render_to_response('exambookings/booking.html', ctx)
 
 
-def home_page(request):
+def home_page_view(request):
     if request.user.is_authenticated():
         return HttpResponseRedirect(reverse('booking'))
     return signin(request,
@@ -65,7 +65,7 @@ def home_page(request):
                   extra_context={'redirect_to':reverse('booking'),})
 
 
-def team_bio(request):
+def team_bio_view(request):
     return render_to_response('exambookings/static_pages/team_bio.html', {})
 
 
