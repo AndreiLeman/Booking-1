@@ -94,7 +94,7 @@ def create_booking_view(request):
     also provides a form to create a new booking appointment
     """
     ctx = create_standard_csrf_context(request)
-    ctx['bookings_list'] = bookings_list_for(request.user)
+    ctx['bookings_list'] = bookings_list_fields_ordered_for(request.user)
     
     form = CreateBookingForm()
     if request.method == 'POST':
@@ -111,7 +111,7 @@ def create_booking_view(request):
 @staff_only_view
 def update_booking_view(request, pk):
     ctx = create_standard_csrf_context(request)
-    ctx['bookings_list'] = bookings_list_for(request.user)
+    ctx['bookings_list'] = bookings_list_fields_ordered_for(request.user)
     
     if request.user.has_perm('exambookings.exam_center_view'):
         exam_center_view = True

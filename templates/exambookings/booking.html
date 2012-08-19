@@ -53,16 +53,19 @@
             <div class="sixcol left_col">
                 <p>&nbsp;</p>
 		{% for booking in bookings_list %}
-		<ul>
-		  <li>student first name: {{ booking.studentFirstName.value }}</li>
-		  <li>student last name: {{ booking.studentLastName.value }}</li>    
-		  <li>{{ booking.course.value }}</li>
-		  <li>{{ booking.test.value }}</li>
-		  <li>{{ booking.examCenter.value }}</li>
-		  <li>{{ booking.courseTeacher.value }}</li>
-		  <li>{{ booking.workPeriod.value }}</li>
-		  <li><a href="{{ booking.editUrl }}">Edit</a></li>    		  
-		</ul>
+		<div style="border: solid 1pt black; margin-bottom: 5px;">
+		<dl>
+		  {% for field in booking %}
+		  {% ifequal field.name 'editUrl' %}
+		  {% else %}
+		  <dt style="width: 40%; float: left; text-align: left;">{{ field.verbose_name }}</dt>
+		  <dd style="width: 40%; float: left;"> {{ field.value }}</dd>
+		  {% endifequal %}
+		  {% endfor %}
+		</dl>
+		<p><a href="{{ booking.0.value }}">Edit</a></p>
+		<div style="clear:both"></div>
+		</div>
 		{% endfor %}
                 <p>&nbsp;</p>
             </div>
