@@ -72,9 +72,11 @@ def create_booking_view(request):
 @staff_only_view
 def update_booking_view(request, pk):
     ctx = create_standard_csrf_context(request)
-    appt = get_object_or_404(Booking, id__iexact=pk)
+    if request.user.has_perm('exambookings.exam_center_view'):
+        ctx['exam_center_view'] = True
     ctx['bookings_list'] = bookings_list_for(request.user)
-    
+
+    appt = get_object_or_404(Booking, id__iexact=pk)
     if request.method == 'POST':
         form = UpdateBookingForm(request.POST, instance=appt)
         if form.is_valid():

@@ -73,7 +73,7 @@
 		{% include "exambookings/form_hidden_fields.html" %}
 
 		{% for field in form %}
-		{% if field.html_name in "studentFirstName studentLastName studentGrade testCourseName testName testDate testDuration testPeriod courseTeacher examCenter" %}
+		{% if field.html_name in "studentFirstName studentLastName studentGrade testCourseName testName testDate testDuration testPeriod examCenter" %}
                 <p>
                   <label class="signInFieldLabel"
                          for="id_{{ field.html_name }}">{{ field.label }}</label>
@@ -82,6 +82,19 @@
                 </p>
 		{% endif %}
 		{% endfor %}
+
+		{% if exam_center_view %}
+		{% for field in form %}
+		{% if field.html_name in "courseTeacher" %}
+                <p>
+                  <label class="signInFieldLabel"
+                         for="id_{{ field.html_name }}">{{ field.label }}</label>
+		  {{ field|add_class:'signInFieldInput' }}
+		  {{ field.errors }}
+                </p>
+		{% endif %}
+		{% endfor %}
+		{% endif %}
 
 		<p class="signInFieldLabel">Accommodations:</p>
 
