@@ -9,14 +9,26 @@ class CreateBookingForm(forms.ModelForm):
         exclude = ('courseTeacher',)
 
 RE_PATTERN_example_com = '[^@]+@example\.com'
+EXAMPLE_COM_DOMAIN = 'example.com'
+EXAMPLE_SIGNUP_EMAIL_WHITELIST = ['homer@example.com']
+
 RE_PATTERN_cbe_ab_ca = '[^@]+@cbe\.ab\.ca'
-SIGNUP_EMAIL_WHITELIST = ['homer@example.com']
+CBE_AB_CA_DOMAIN = 'cbe.ab.ca'
+PRODUCTION_SIGNUP_EMAIL_WHITELIST = []
+
+### ensure following settings are correct for production use
+############################################################
+MAIN_EMAIL_DOMAIN_RE_PATTERN = RE_PATTERN_example_com
+MAIN_EMAIL_DOMAIN = EXAMPLE_COM_DOMAIN
+SIGNUP_EMAIL_WHITELIST = EXAMPLE_SIGNUP_EMAIL_WHITELIST
+############################################################
 
 def email_is_allowed_signup(email):
-    """returns True only if email address is from domain example.com
+    """returns True only if email address is from domain MAIN_EMAIL_DOMAIN
+    determined by MAIN_EMAIL_DOMAIN_RE_PATTERN
     or email is in SIGNUP_EMAIL_WHITELIST
     """
-    if (None != re.match(RE_PATTERN_example_com, email)) or (email in SIGNUP_EMAIL_WHITELIST):
+    if (None != re.match(MAIN_EMAIL_DOMAIN_RE_PATTERN, email)) or (email in SIGNUP_EMAIL_WHITELIST):
         return True
     return False
 
