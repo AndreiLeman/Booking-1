@@ -5,6 +5,10 @@ import userena.forms, re
 from exambookings import settings
 
 
+class UpdateBookingForm(forms.ModelForm):
+    class Meta:
+        model = Booking
+
 class CreateBookingForm(forms.ModelForm):
     class Meta:
         model = Booking

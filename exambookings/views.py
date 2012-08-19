@@ -8,7 +8,8 @@ from django.core.context_processors import csrf
 
 from django.contrib.auth.models import User
 from exambookings.models import Booking
-from exambookings.forms import CreateBookingForm, ExamBookingSignupForm, ExamBookingAuthForm
+from exambookings.forms import CreateBookingForm, ExamBookingSignupForm, ExamBookingAuthForm, UpdateBookingForm
+
 import userena.views
 
 from django.core.urlresolvers import reverse
@@ -66,6 +67,24 @@ def booking_view(request):
     
     ctx['form'] = form
     return render_to_response('exambookings/booking.html', ctx)
+
+
+@staff_only_view
+def update_booking_view(request, pk):
+    ctx = create_standard_csrf_context(request)
+    appt = get_object_or_404(Booking, id__iexact=pk)
+    ctx['bookings_list'] = bookings_list_for(request.user)
+    
+    if request.method == 'POST':
+        form = UpdateBookingForm(request.POST, instance=appt)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(reverse('update_booking', kwargs={'pk':pk}))
+    else:
+        form = UpdateBookingForm(instance=appt)
+    
+    ctx['form'] = form
+    return render_to_response('exambookings/update_booking.html', ctx)
 
 
 def sign_up_view(request):
