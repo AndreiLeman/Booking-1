@@ -8,7 +8,7 @@ from django.core.context_processors import csrf
 
 from django.contrib.auth.models import User
 from exambookings.models import Booking
-from exambookings.forms import CreateBookingForm, ExamBookingSignupForm
+from exambookings.forms import CreateBookingForm, ExamBookingSignupForm, ExamBookingAuthForm
 import userena.views
 
 from django.core.urlresolvers import reverse
@@ -92,7 +92,8 @@ def home_page_view(request):
     ctx['redirect_to'] = reverse('booking')
     return userena.views.signin(request,
                                 template_name='exambookings/home.html',
-                                extra_context=ctx)
+                                extra_context=ctx,
+                                auth_form=ExamBookingAuthForm)
 
 
 def team_bio_view(request):

@@ -56,3 +56,11 @@ class ExamBookingSignupForm(userena.forms.SignupFormOnlyEmail):
         user.save()
         return user
 
+class ExamBookingAuthForm(userena.forms.AuthenticationForm):
+    def clean(self):
+        email = self.cleaned_data.get('identification')
+        if not email_is_allowed_signup(email):
+            email = email + '@' + MAIN_EMAIL_DOMAIN
+            if email_is_allowed_signup(email):
+                self.cleaned_data['identification'] = email
+        return super(ExamBookingAuthForm, self).clean()
