@@ -6,6 +6,7 @@ from django.http import HttpResponseRedirect
 from django.template import RequestContext
 from django.core.context_processors import csrf
 
+from django.contrib.auth.models import User
 from exambookings.models import Booking
 from exambookings.forms import CreateBookingForm, ExamBookingSignupForm
 import userena.views
@@ -103,3 +104,12 @@ def team_bio_view(request):
 def static_page(request, file_name):
     return render_to_response('exambookings/static_pages/'+file_name, {})
 
+@login_required
+def user_profile_view(request):
+    """ users in exambookings app have usernames assigned randomly so
+    they don't know their own username (only their email address)
+    so to access their user accounts they have to sign in first, then
+    this view will redirect to the correct userena user account profile
+    """
+    user = get_object_or_404(User, email__iexact=request.user.email)
+    return HttpResponseRedirect(reverse('userena_profile_detail', kwargs={'username': user.username}))

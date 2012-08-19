@@ -21,4 +21,6 @@ urlpatterns = patterns('',
                            name='booking'),
                        url(r'^static_page/(?P<file_name>.*\.html)$',
                            'exambookings.views.static_page'), # test out way to serve static page as though it were dynamic
+                       url(r'^accounts/$',
+                           'exambookings.views.user_profile_view')
 ) + static(settings.STATIC_URL, document_root='exambookings/static/')
