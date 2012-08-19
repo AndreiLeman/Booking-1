@@ -114,7 +114,7 @@ AUTHENTICATION_BACKENDS = (
 
 # Settings used by Userena
 EMAIL_BACKEND = 'django.core.mail.backends.dummy.EmailBackend' # for development only?
-LOGIN_REDIRECT_URL = '/exambookings/booking' #'/accounts/%(username)s/'
+LOGIN_REDIRECT_URL = '/accounts/%(username)s/'
 LOGIN_URL = '/exambookings/home'
 LOGOUT_URL = '/exambookings/signout'
 AUTH_PROFILE_MODULE = 'profiles.BaseProfile'
