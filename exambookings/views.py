@@ -57,6 +57,21 @@ def booking_view(request):
     return render_to_response('exambookings/booking.html', ctx)
 
 
+def sign_up_view(request):
+    ctx = create_standard_context(request)
+    return userena.views.signup(request,
+                                success_url=reverse('home'),
+                                template_name='exambookings/sign_up.html',
+                                extra_context=ctx)
+
+
+def sign_out_view(request):
+#    ctx = create_standard_context(request)
+    return userena.views.signout(request)
+                                # template_name='exambookings/sign_up.html',
+
+ 
+
 def home_page_view(request):
     if request.user.is_authenticated():
         return HttpResponseRedirect(reverse('booking'))
