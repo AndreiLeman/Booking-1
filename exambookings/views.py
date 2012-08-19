@@ -7,7 +7,7 @@ from django.template import RequestContext
 from django.core.context_processors import csrf
 
 from exambookings.models import Booking
-from exambookings.forms import CreateBookingForm
+from exambookings.forms import CreateBookingForm, ExamBookingSignupForm
 import userena.views
 
 from django.core.urlresolvers import reverse
@@ -70,6 +70,7 @@ def booking_view(request):
 def sign_up_view(request):
     ctx = create_standard_context(request)
     return userena.views.signup(request,
+                                signup_form=ExamBookingSignupForm,
                                 success_url=reverse('home'),
                                 template_name='exambookings/sign_up.html',
                                 extra_context=ctx)
