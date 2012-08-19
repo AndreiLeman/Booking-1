@@ -1,8 +1,8 @@
-from django import forms as dforms
+from django import forms
 from exambookings.models import Booking
 import userena.forms, re
 
-class CreateBookingForm(dforms.ModelForm):
+class CreateBookingForm(forms.ModelForm):
     class Meta:
         model = Booking
         exclude = ('courseTeacher',)
@@ -23,5 +23,5 @@ class ExamBookingSignupForm(userena.forms.SignupFormOnlyEmail):
     def clean_email(self):
         """ Validate that the e-mail address is allowed. """
         if not email_is_allowed_signup(self.cleaned_data['email']):
-            raise dforms.ValidationError('This email is not allowed. Please supply an authorized email.')
+            raise forms.ValidationError('This email is not allowed. Please supply an authorized email.')
         return super(ExamBookingSignupForm, self).clean_email()
