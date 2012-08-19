@@ -9,9 +9,21 @@ from django.core.context_processors import csrf
 from exambookings.models import Booking
 from exambookings.forms import CreateBookingForm
 from userena.views import signin
+import userena
 
 from django.core.urlresolvers import reverse
 from exambookings.viewsHelpers import reverse_lazy, staff_only_view
+
+def create_standard_context(request):
+    ctx = {}
+    if request.user.is_authenticated():
+        ctx['user_logged_in'] = True
+    return ctx
+
+def create_standard_csrf_context(request):
+    ctx = create_standard_context(request)
+    ctx.update(csrf(request))
+    return ctx
 
 def bookings_list_for(user):
     """ returns dictionary of bookings the user can view """
@@ -41,8 +53,7 @@ def booking_view(request):
     """ shows bookings available to be seen by logged-in user
     also provides a form to create a new booking appointment
     """
-    ctx = {}
-    ctx.update(csrf(request))
+    ctx = create_standard_csrf_context(request)
     ctx['bookings_list'] = bookings_list_for(request.user)
     
     form = CreateBookingForm()
@@ -75,13 +86,17 @@ def sign_out_view(request):
 def home_page_view(request):
     if request.user.is_authenticated():
         return HttpResponseRedirect(reverse('booking'))
-    return signin(request,
-                  template_name='exambookings/home.html',
-                  extra_context={'redirect_to':reverse('booking'),})
+
+    ctx = create_standard_context(request)
+    ctx['redirect_to'] = reverse('booking')
+    return userena.views.signin(request,
+                                template_name='exambookings/home.html',
+                                extra_context=ctx)
 
 
 def team_bio_view(request):
-    return render_to_response('exambookings/static_pages/team_bio.html', {})
+    ctx = create_standard_context(request)
+    return render_to_response('exambookings/static_pages/team_bio.html', ctx)
 
 
 @login_required
