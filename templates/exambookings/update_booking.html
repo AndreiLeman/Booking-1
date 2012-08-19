@@ -54,13 +54,13 @@
                 <p>&nbsp;</p>
 		{% for booking in bookings_list %}
 		<ul>
-		  <li>student first name: {{ booking.studentFirstName }}</li>
-		  <li>student last name: {{ booking.studentLastName }}</li>    
-		  <li>{{ booking.course }}</li>
-		  <li>{{ booking.test }}</li>
-		  <li>{{ booking.examCenter }}</li>
-		  <li>{{ booking.courseTeacher }}</li>
-		  <li>{{ booking.workPeriod }}</li>
+		  <li>student first name: {{ booking.studentFirstName.value }}</li>
+		  <li>student last name: {{ booking.studentLastName.value }}</li>    
+		  <li>{{ booking.course.value }}</li>
+		  <li>{{ booking.test.value }}</li>
+		  <li>{{ booking.examCenter.value }}</li>
+		  <li>{{ booking.courseTeacher.value }}</li>
+		  <li>{{ booking.workPeriod.value }}</li>
 		  <li><a href="{{ booking.editUrl }}">Edit</a></li>    		  		  
 		</ul>
 		{% endfor %}

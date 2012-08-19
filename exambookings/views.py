@@ -35,34 +35,36 @@ def bookings_list_for(user):
     else:
         bookings = []
 
-    bookings_list = []    
+    fieldNames = ["studentFirstName",
+                  "studentLastName",
+                  'studentGrade',
+                  "testCourseName",
+                  "courseTeacher",
+                  'testName',
+                  'testDuration',
+                  'testDate',
+                  "testPeriod",
+                  "examCenter",
+                  'extendedTimeAccomodation',
+                  'computerAccomodation',
+                  'scribeAccomodation',
+                  'enlargementsAccomodation',
+                  'readerAccomodation',
+                  'isolationQuietAccomodation',
+                  'ellDictionaryAllowance',
+                  'calculatorManipulativesAllowance',
+                  'openBookNotesAllowance',
+                  'computerInternetAllowance',
+                  'englishDictionaryThesaurusAllowance',
+                  'otherAllowances']
+    bookings_list = []
     for booking in bookings:
-        bookings_list.append(
-            {"studentFirstName": booking.studentFirstName,
-             "studentLastName": booking.studentLastName,
-             'studentGrade': booking.studentGrade,
-             "testCourseName": booking.testCourseName,
-             "courseTeacher": '' + booking.courseTeacher.first_name + ' ' + booking.courseTeacher.last_name,
-             'testName': booking.testName,
-             'testDuration': booking.testDuration,
-             'testDate': booking.testDate,
-             "testPeriod": booking.testPeriod,
-             "examCenter": booking.examCenter,
-             'extendedTimeAccomodation': booking.extendedTimeAccomodation,
-             'computerAccomodation': booking.computerAccomodation,
-             'scribeAccomodation': booking.scribeAccomodation,
-             'enlargementsAccomodation': booking.enlargementsAccomodation,
-             'readerAccomodation': booking.readerAccomodation,
-             'isolationQuietAccomodation': booking.isolationQuietAccomodation,
-
-             'ellDictionaryAllowance': booking.ellDictionaryAllowance,
-             'calculatorManipulativesAllowance': booking.calculatorManipulativesAllowance,
-             'openBookNotesAllowance': booking.openBookNotesAllowance,
-             'computerInternetAllowance': booking.computerInternetAllowance,
-             'englishDictionaryThesaurusAllowance': booking.englishDictionaryThesaurusAllowance,
-             'otherAllowances': booking.otherAllowances,
-             'editUrl':reverse('update_booking', kwargs={'pk':booking.pk})}) ## TODO: make this list complete, then display it prettily
-
+        bookingData = {'editUrl':reverse('update_booking',
+                                         kwargs={'pk':booking.pk})}
+        for fieldname in fieldNames:
+            bookingData.update({fieldname: booking.fieldDataOf(fieldname)})
+        
+        bookings_list.append(bookingData)
     return bookings_list
 
 
