@@ -27,6 +27,7 @@ class ExamBookingSignupForm(userena.forms.SignupFormOnlyEmail):
 
     def __init__(self, *args, **kwargs):
         super(ExamBookingSignupForm, self).__init__(*args, **kwargs)
+        self.fields['password1'].label = self.fields['password1'].label + " (Use one you've never used before!)"
         self.fields.keyOrder = ['firstname', 'lastname', 'email', 'password1', 'password2']
     
     def clean_email(self):
