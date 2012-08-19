@@ -118,10 +118,14 @@ LOGIN_REDIRECT_URL = '/accounts/%(username)s/'
 LOGIN_URL = '/exambookings/home'
 LOGOUT_URL = '/exambookings/signout'
 AUTH_PROFILE_MODULE = 'profiles.BaseProfile'
+USERENA_SIGNIN_REDIRECT_URL = '/exambookings/booking'
 USERENA_REDIRECT_ON_SIGNOUT = '/exambookings/home'
 USERENA_DISABLE_PROFILE_LIST = True
 USERENA_MUGSHOT_SIZE = 140
 USERENA_WITHOUT_USERNAMES = True
+USERENA_DEFAULT_PRIVACY = 'closed'
+USERENA_HIDE_EMAIL = True
+USERENA_USE_HTTPS = False
 
 ROOT_URLCONF = 'Booking.urls'
 
