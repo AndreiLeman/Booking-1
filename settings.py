@@ -1,3 +1,5 @@
+import secure_settings
+
 # Django settings for exampleApp project.
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -112,8 +114,16 @@ AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
 )
 
+# Email Settings - used by Userena as well
+#EMAIL_BACKEND = 'django.core.mail.backends.dummy.EmailBackend' # for development
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend' #for production
+EMAIL_HOST = secure_settings.EMAIL_HOST
+EMAIL_PORT = secure_settings.EMAIL_PORT
+EMAIL_HOST_USER = secure_settings.EMAIL_HOST_USER
+EMAIL_HOST_PASSWORD = secure_settings.EMAIL_HOST_PASSWORD
+EMAIL_USE_TLS = secure_settings.EMAIL_USE_TLS
+
 # Settings used by Userena
-EMAIL_BACKEND = 'django.core.mail.backends.dummy.EmailBackend' # for development only?
 LOGIN_REDIRECT_URL = '/accounts/%(username)s/'
 LOGIN_URL = '/exambookings/home'
 LOGOUT_URL = '/exambookings/signout'
