@@ -11,6 +11,7 @@ from exambookings.models import Booking
 from exambookings.forms import CreateBookingForm, ExamBookingSignupForm, ExamBookingAuthForm, UpdateBookingForm
 
 import userena.views
+import userena.settings
 
 from django.core.urlresolvers import reverse
 from exambookings.viewsHelpers import reverse_lazy, staff_only_view
@@ -142,9 +143,16 @@ def sign_up_view(request):
     ctx = create_standard_context(request)
     return userena.views.signup(request,
                                 signup_form=ExamBookingSignupForm,
-                                success_url=reverse('home'),
+                                success_url=reverse('sign_up_success'),
                                 template_name='exambookings/sign_up.html',
                                 extra_context=ctx)
+
+
+def sign_up_success_view(request):
+    ctx = create_standard_context(request)
+    ctx.update({'userena_activation_required': userena.settings.USERENA_ACTIVATION_REQUIRED,
+                'userena_activation_days': userena.settings.USERENA_ACTIVATION_DAYS})
+    return render_to_response('exambookings/signup_complete.html', ctx)
 
 
 def sign_out_view(request):
