@@ -138,7 +138,7 @@ USERENA_DEFAULT_PRIVACY = 'closed'
 USERENA_HIDE_EMAIL = True
 USERENA_USE_HTTPS = False
 
-ROOT_URLCONF = 'Booking.urls'
+ROOT_URLCONF = 'BookingProj.urls'
 
 TEMPLATE_DIRS = (
     os.path.join(PROJECT_ROOT, "templates/"),
