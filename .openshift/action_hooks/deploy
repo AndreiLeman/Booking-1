@@ -24,7 +24,7 @@ then
 fi
 
 # copy persistent OpenShift data dir's secure_settings.py (if it's there) to project-root/secure_settings.py
-if [ ! -f $OPENSHIFT_DATA_DIR/secure_settings.py ]
+if [ -f $OPENSHIFT_DATA_DIR/secure_settings.py ]
 then
     echo "Copying persistent $OPENSHIFT_DATA_DIR/secure_settings.py to $OPENSHIFT_REPO_DIR/wsgi/BookingProj/secure_settings.py"
     cp "$OPENSHIFT_DATA_DIR"secure_settings.py "$OPENSHIFT_REPO_DIR"wsgi/BookingProj/secure_settings.py
