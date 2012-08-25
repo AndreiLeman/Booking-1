@@ -1,0 +1,14 @@
+<div class="twocol logo_graphic"><img src="../static/img/title1.png"/></div>
+
+<div class="tencol last nav_bar">
+  {% if user_logged_in %}
+  <a href="/exambookings/booking"><div class="threecol button">Book an Exam</div></a>
+  <a href="/exambookings/signout"><div class="threecol button">Sign Out</div></a>
+  <a href="/exambookings/accounts"><div class="threecol button">Edit Account</div></a>
+  <div class="threecol last">&nbsp;</div>
+  {% else %}
+  <a href="/exambookings/home"><div class="threecol button">Home</div></a>
+  <a href="/exambookings/signup"><div class="threecol button">Sign Up</div></a>
+  <div class="sixcol last">&nbsp;</div>
+  {% endif %}
+</div>

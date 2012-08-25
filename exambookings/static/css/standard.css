@@ -1,0 +1,387 @@
+@charset "UTF-8";
+/* CSS Document */
+
+.signInFieldInput {
+    display: block;
+    width: 46%;
+    margin-right: 4%;
+    float:left;
+    position: relative;
+}
+
+.acc {
+/*    display: block;*/
+    width: 46%;
+    margin-right: 4%;
+    position: relative;
+    text-align: right;
+}
+.signInFieldLabel {
+    display: block;
+    width: 50%;
+    float:left;
+    position: relative;
+    text-align: right;
+    padding-right: 2em;
+    font-weight: bold;
+}
+
+/*.submitFieldLabel {
+    display: block;
+    width: 50%;
+    float:left;
+    position: relative;
+    text-align: right;
+    padding-right: 2em;
+    font-weight: bold;
+}*/
+
+/*.submitFieldInput {
+    display: block;
+    width: 46%;
+    margin-right: 4%;
+    float:left;
+    position: relative;
+}*/
+
+.submit {
+    text-align: center;
+    float: none;
+    background-color: #cc0b04;
+}
+
+.submit1 {
+    text-align: center;
+    float: none;
+    background-color: #cc0b04;
+    -moz-border-radius-bottomleft: 10px;
+    -webkit-border-bottom-left-radius: 10px;
+    -moz-border-radius-bottomright: 10px;
+    -webkit-border-bottom-right-radius: 10px;
+}
+
+/* =============================================================================
+   Chrome Frame Prompt - DON'T CHANGE THIS
+   ========================================================================== */
+
+.chromeframe {
+    margin: 0.2em 0;
+    background: #ccc;
+    color: black;
+    padding: 0.2em 0;
+    font-size: 16pt;
+    }
+
+/* =============================================================================
+   Page Header
+   ========================================================================== */
+.logo_title_bar {
+    background-color: #cc0b04;
+
+}
+
+
+.logo_graphic {
+	padding-top: 1%;
+        height: 50px;
+        background-color: #cc0b04;/* just to show you the display box */
+        text-align: center;
+}
+
+/*.company_name {
+	margin-left: 5%;
+	border: silver 1pt solid;
+        background-color: red; just to show you the display box 
+}*/
+
+
+
+/* =============================================================================
+   Navigation
+   ========================================================================== */
+   
+.nav_bar {
+            
+}
+
+.navbar_button {
+/*	border: black 1pt solid;*/
+        /*margin: 1px/* just to show you the display box */
+}
+
+
+.body_row {
+	border: black 1pt solid;
+        background-color: darkgray;
+        padding-left: 1%;
+        
+        
+        
+        
+}
+
+.left_col {
+	border: black 1pt solid;
+        background-color: lightgrey;
+        text-align: center;
+        margin-top: 1%;
+        margin-bottom: 1%;
+        padding-left: 0.25%;
+        -moz-border-radius: 10px;
+        -webkit-border-radius: 10px;
+        border-radius: 10px;
+        border: 1px solid;
+        
+        
+}
+
+.student1 {
+        border: black 1pt solid;
+        background-color: lightgrey;
+        text-align: center;
+        font-weight: bold;
+        margin-top: 1%;
+        text-decoration: underline;
+        -moz-border-radius: 10px;
+        -webkit-border-radius: 10px;
+        border-radius: 10px;
+        border: 1px solid;
+        
+    
+}
+
+.teacher1 {
+        border: black 1pt solid;
+        background-color: lightgray;
+        text-align: center;
+        font-weight: bold;
+        margin-top: 1%;
+        margin-bottom: 1%;
+        text-decoration: underline;
+        -moz-border-radius: 10px;
+        -webkit-border-radius: 10px;
+        border-radius: 10px;
+        border: 1px solid;
+        
+    
+}
+
+.student2 {
+        border: black 1pt solid;
+        background-color: lightgray;
+        text-align: center;
+        font-weight: bold;
+        margin-top: 1%;
+        text-decoration: underline;
+        -moz-border-radius: 10px;
+        -webkit-border-radius: 10px;
+        border-radius: 10px;
+        border: 1px solid;
+}
+
+.teacher2 {
+        border: black 1pt solid;
+        background-color: lightgray;
+        text-align: center;
+        font-weight: bold;
+        margin-top: 1%;
+        margin-bottom: 1%;
+        text-decoration: underline;
+        -moz-border-radius: 10px;
+        -webkit-border-radius: 10px;
+        border-radius: 10px;
+        border: 1px solid;
+}
+
+.student3 {
+        border: black 1pt solid;
+        background-color: lightgray;
+        text-align: center;
+        font-weight: bold;
+        margin-top: 1%;
+        text-decoration: underline;
+        -moz-border-radius: 10px;
+        -webkit-border-radius: 10px;
+        border-radius: 10px;
+        border: 1px solid;
+}
+
+.right_col {
+        
+	border: black 1pt solid;
+        background-color: lightgray;
+        margin-top: 1%;
+        margin-bottom: 1%;
+        -moz-border-radius: 10px;
+        -webkit-border-radius: 10px;
+        border-radius: 10px;
+        border: 1px solid;
+        
+}
+
+.footer_bar {
+	text-align: center;
+        background-color: #cc0b04;
+        -moz-border-radius-bottomleft: 10px;
+        -webkit-border-bottom-left-radius: 10px;
+        -moz-border-radius-bottomright: 10px;
+        -webkit-border-bottom-right-radius: 10px;
+       
+        
+}
+
+.welcome {
+    text-align: center;
+    text-decoration: underline;
+    padding-bottom: 5%;
+    font-size: 25px;
+    font-weight: bold;
+}
+
+.welcometext {
+    text-align: left;
+    font-size: 17px;
+}
+
+/*.button {
+   border-top: 1px solid #000000;
+   background: #fab300;
+   background: -webkit-gradient(linear, left top, left bottom, from(#a86f0c), to(#fab300));
+   background: -webkit-linear-gradient(top, #a86f0c, #fab300);
+   background: -moz-linear-gradient(top, #a86f0c, #fab300);
+   background: -ms-linear-gradient(top, #a86f0c, #fab300);
+   background: -o-linear-gradient(top, #a86f0c, #fab300);
+   padding: 5px 10px;
+   -webkit-border-radius: 8px;
+   -moz-border-radius: 8px;
+   border-radius: 8px;
+   -webkit-box-shadow: rgba(0,0,0,1) 0 1px 0;
+   -moz-box-shadow: rgba(0,0,0,1) 0 1px 0;
+   box-shadow: rgba(0,0,0,0) 0 1px 0;
+   text-shadow: rgba(0,0,0,.4) 0 1px 0;
+   color: #080000;
+   font-size: 14px;
+   font-family: Helvetica, Arial, Sans-Serif;
+   text-decoration: none;
+   vertical-align: middle;
+   text-align: center;
+   margin-bottom: 0.5%;
+   margin-top: 0.5%;
+   
+   }
+.button:hover {
+   border-top-color: #a30a0a;
+   background: #a30a0a;
+   color: #ccc;
+   }
+.button:active {
+   border-top-color: #c9d0d4;
+   background: #c9d0d4;
+
+   }*/
+
+.button {
+   border-top: 1px solid #cc0b04;
+   background: #cc0b04;
+   background: -webkit-gradient(linear, left top, left bottom, from(#cc0b04), to(#cc0b04));
+   background: -webkit-linear-gradient(top, #cc0b04, #cc0b04);
+   background: -moz-linear-gradient(top, #cc0b04, #cc0b04);
+   background: -ms-linear-gradient(top, #cc0b04, #cc0b04);
+   background: -o-linear-gradient(top, #cc0b04, #cc0b04);
+   padding: 5px 10px;
+   -webkit-border-radius: 4px;
+   -moz-border-radius: 4px;
+   border-radius: 4px;
+   -webkit-box-shadow: rgba(0,0,0,1) 0 1px 0;
+   -moz-box-shadow: rgba(0,0,0,1) 0 1px 0;
+   box-shadow: rgba(0,0,0,0) 0 1px 0;
+   text-shadow: rgba(0,0,0,.4) 0 1px 0;
+   color: white;
+   font-size: 18px;
+   font-family: Helvetica, Arial, Sans-Serif;
+   text-decoration: none;
+   text-align: center;
+   margin-bottom: 0.5%;
+   margin-top: 0.5%;
+   vertical-align: middle;
+   }
+.button:hover {
+   border-top-color: #fab300;
+   background: #fab300;
+   color: white;
+   }
+.button:active {
+   border-top-color: #e06f0b;
+   background: #e06f0b;
+   }
+   
+.nav_bar a:link, .nav_bar a:hover, .nav_bar a:active, .nav_bar a:visited {
+    text-decoration: none;
+   }
+   
+   body{
+       background-color: darkgray;
+   }
+   
+/*.nav_bar .current_page {
+    background-color: red;  
+   }*/
+
+
+/* dropdown menu */
+/*.nav_bar_links li ul {
+	position:absolute;
+	left:-9999px;
+}
+
+.nav_bar_links li ul li {
+	background-color: black;
+	color:white;
+}
+
+.nav_bar_links li:hover ul {
+	left:0px;
+}
+
+.nav_bar_links li ul li:hover {
+	background-color: red;
+}*/
+
+
+/* =============================================================================
+   Column Layout
+   ========================================================================== */
+
+/*/*.column {
+	width: 45%;
+	float: left;
+	border: black 1pt solid;  just to show you the display box 
+	background-color: gray;
+}*/
+/*
+.rounded_corners {
+	-moz-border-radius:10px;  Firefox 
+	-webkit-border-radius:10px;  Safari and chrome 
+	-khtml-border-radius:10px;  Linux browsers 
+	border-radius:10px;  CSS3 
+	behaviour:url(border-radius.htc);
+}*/
+
+
+/*Add the following code if you want all corners of a div to be rounded*/
+/*-moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+    border: 1px solid;*/
+
+/*Add the folowing code in order to make the top left corner rounded
+
+-moz-border-radius-topleft: 10px;
+    -webkit-border-top-left-radius: 10px;
+    border: 1px solid;
+
+*/
+
+
+
+

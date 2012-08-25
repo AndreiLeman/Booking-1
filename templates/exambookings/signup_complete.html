@@ -1,0 +1,12 @@
+<h1>Signup almost done!</h1>
+
+<h2>Signup</h2>
+
+<p>Thank you for signing up with us!</p>
+
+{% if userena_activation_required %}
+<p>You have been sent an e-mail with an activation link to the supplied email.</p>
+<p>We will store your signup information for {{ userena_activation_days }} days on our server.</p>
+{% else  %}
+<p>You can now use the supplied credentials to signin.</p>
+{% endif %}
