@@ -4,6 +4,7 @@ import secure_settings
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
+USE_DUMMY_EMAIL_SERVER = True
 # automatically gets the abs path of dir containing this settings.py file
 import os
 settings_dir = os.path.dirname(__file__)
@@ -116,8 +117,11 @@ AUTHENTICATION_BACKENDS = (
 )
 
 # Email Settings - used by Userena as well
-#EMAIL_BACKEND = 'django.core.mail.backends.dummy.EmailBackend' # for development
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend' #for production
+if USE_DUMMY_EMAIL_SERVER:
+    EMAIL_BACKEND = 'django.core.mail.backends.dummy.EmailBackend' #for development
+else:
+    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend' #for production
+
 EMAIL_HOST = secure_settings.EMAIL_HOST
 EMAIL_PORT = secure_settings.EMAIL_PORT
 EMAIL_HOST_USER = secure_settings.EMAIL_HOST_USER
