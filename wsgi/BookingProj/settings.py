@@ -28,7 +28,7 @@ if ON_OPENSHIFT:
     # this should be git-repo-on-OpenShift/../data/exambookings.db
     DATABASE_PATH_NAME = os.path.join(os.environ['OPENSHIFT_DATA_DIR'], 'exambookings.db')
 else:
-    DATABASE_PATH_NAME = os.path.join(PROJECT_ROOT, '..', '..', 'data', 'exambookings.db')
+    DATABASE_PATH_NAME = os.path.join(PROJECT_ROOT, '..', '..', 'data', 'exambookings_template.db')
 
 DATABASES = {
     'default': {
