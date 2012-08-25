@@ -29,6 +29,5 @@ urlpatterns = patterns('',
                            'exambookings.views.user_profile_view'),
                        url(r'^booking/(?P<pk>\d+)/$',
                            'exambookings.views.update_booking_view',
-#                           exambookings.views.UpdateBookingView.as_view(),
                            name='update_booking'),
-) + static(settings.STATIC_URL, document_root='exambookings/static/')
+)
