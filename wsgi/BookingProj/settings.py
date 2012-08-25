@@ -5,8 +5,15 @@ DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
 USE_DUMMY_EMAIL_SERVER = True
-# automatically gets the abs path of dir containing this settings.py file
+
 import os
+
+# settings to determine if running on OpenShift
+ON_OPENSHIFT = False
+if os.environ.has_key('OPENSHIFT_REPO_DIR'):
+    ON_OPENSHIFT = True
+
+# automatically gets the abs path of dir containing this settings.py file
 settings_dir = os.path.dirname(__file__)
 PROJECT_ROOT = os.path.abspath(settings_dir)
 #DEV_ROOT = "/home/ckcheng/exampleApp/" # must end in slash. change when project folder moves during development
@@ -17,10 +24,16 @@ ADMINS = (
 
 MANAGERS = ADMINS
 
+if ON_OPENSHIFT:
+    # this should be git-repo-on-OpenShift/../data/exambookings.db
+    DATABASE_PATH_NAME = os.path.join(os.environ['OPENSHIFT_DATA_DIR'], 'exambookings.db')
+else:
+    DATABASE_PATH_NAME = os.path.join(PROJECT_ROOT, '..', '..', 'data', 'exambookings.db')
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': os.path.join(PROJECT_ROOT, 'exambookings.db'),     # Or path to database file if using sqlite3.
+        'NAME': DATABASE_PATH_NAME,     # Or path to database file if using sqlite3.
         'USER': '',                      # Not used with sqlite3.
         'PASSWORD': '',                  # Not used with sqlite3.
         'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
@@ -53,7 +66,10 @@ USE_L10N = True
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/home/media/media.lawrence.com/media/"
-MEDIA_ROOT = os.path.join(PROJECT_ROOT, '../media/')
+if ON_OPENSHIFT:
+    MEDIA_ROOT = os.path.join(os.environ['OPENSHIFT_DATA_DIR'], 'media')
+else:
+    MEDIA_ROOT = os.path.join(PROJECT_ROOT, 'media')
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash.
@@ -91,8 +107,17 @@ STATICFILES_FINDERS = (
 #    'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
 
+# Per OpenShift django-example, we'll create dynamic SECRET_KEY if on OpenShift
+default_keys = {'SECRET_KEY': '1ixzm%16=+)0d=pf3+*$javh(36m^2scc2nul+ke+$aywwn(x0'}
+use_keys = default_keys
+if ON_OPENSHIFT:
+    import imp
+    imp.find_module('openshiftlibs')
+    import openshiftlibs
+    use_keys = openshiftlibs.openshift_secure(default_keys)
+
 # Make this unique, and don't share it with anybody.
-SECRET_KEY = '1ixzm%16=+)0d=pf3+*$javh(36m^2scc2nul+ke+$aywwn(x0'
+SECRET_KEY = use_keys['SECRET_KEY']
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
