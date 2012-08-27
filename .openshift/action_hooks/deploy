@@ -6,20 +6,6 @@
 
 source $OPENSHIFT_GEAR_DIR/virtenv/bin/activate
 
-# copy secure_settings_safe_template.py to project-root/secure_settings.py if it's not there
-if [ ! -f $OPENSHIFT_REPO_DIR/wsgi/BookingProj/secure_settings.py ]
-then
-    echo "Copying $OPENSHIFT_REPO_DIR/data/secure_settings_safe_template.py to $OPENSHIFT_REPO_DIR/wsgi/BookingProj/secure_settings.py"
-    cp "$OPENSHIFT_REPO_DIR"data/secure_settings_safe_template.py "$OPENSHIFT_REPO_DIR"wsgi/BookingProj/secure_settings.py
-fi
-
-# copy persistent OpenShift data dir's secure_settings.py (if it's there) to project-root/secure_settings.py
-if [ -f $OPENSHIFT_DATA_DIR/secure_settings.py ]
-then
-    echo "Copying persistent $OPENSHIFT_DATA_DIR/secure_settings.py to $OPENSHIFT_REPO_DIR/wsgi/BookingProj/secure_settings.py"
-    cp "$OPENSHIFT_DATA_DIR"secure_settings.py "$OPENSHIFT_REPO_DIR"wsgi/BookingProj/secure_settings.py
-fi
-
 # copy template exambookings.db to persistent OpenShift data dir if it's not there, or else run syncdb
 if [ ! -f $OPENSHIFT_DATA_DIR/exambookings.db ]
 then
