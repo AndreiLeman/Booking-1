@@ -1,4 +1,4 @@
-import secure_settings
+from secure_settings import SECURE_SETTINGS
 
 # Django settings for exampleApp project.
 DEBUG = True
@@ -147,11 +147,11 @@ if USE_DUMMY_EMAIL_SERVER:
 else:
     EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend' #for production
 
-EMAIL_HOST = secure_settings.EMAIL_HOST
-EMAIL_PORT = secure_settings.EMAIL_PORT
-EMAIL_HOST_USER = secure_settings.EMAIL_HOST_USER
-EMAIL_HOST_PASSWORD = secure_settings.EMAIL_HOST_PASSWORD
-EMAIL_USE_TLS = secure_settings.EMAIL_USE_TLS
+EMAIL_HOST = SECURE_SETTINGS["EMAIL_HOST"]
+EMAIL_PORT = SECURE_SETTINGS["EMAIL_PORT"]
+EMAIL_HOST_USER = SECURE_SETTINGS["EMAIL_HOST_USER"]
+EMAIL_HOST_PASSWORD = SECURE_SETTINGS["EMAIL_HOST_PASSWORD"]
+EMAIL_USE_TLS = SECURE_SETTINGS["EMAIL_USE_TLS"]
 
 # Settings used by Userena
 LOGIN_REDIRECT_URL = '/accounts/%(username)s/'
