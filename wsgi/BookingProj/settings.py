@@ -4,7 +4,7 @@ import secure_settings
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
-USE_DUMMY_EMAIL_SERVER = True
+USE_DUMMY_EMAIL_SERVER = False
 
 import os
 
