@@ -26,6 +26,26 @@
     font-weight: bold;
 }
 
+.checkboxFieldLabel {
+    display: block;
+    width: 50%;
+    float:left;
+    position: relative;
+    text-align: right;
+    padding-right: 2em;
+    margin-bottom: 3%;
+}
+
+.checkboxFieldInput {
+    display: i;
+    width: 4%;
+    margin-right: 45%;
+    float:right;
+    position: relative;
+    text-align: center;
+    margin-bottom: 3%;
+}
+
 /*.submitFieldLabel {
     display: block;
     width: 50%;
@@ -47,13 +67,13 @@
 .submit {
     text-align: center;
     float: none;
-    background-color: #cc0b04;
+    background-color: blue;
 }
 
 .submit1 {
     text-align: center;
     float: none;
-    background-color: #cc0b04;
+    background-color: blue;
     -moz-border-radius-bottomleft: 10px;
     -webkit-border-bottom-left-radius: 10px;
     -moz-border-radius-bottomright: 10px;
@@ -75,16 +95,20 @@
 /* =============================================================================
    Page Header
    ========================================================================== */
-.logo_title_bar {
+/*.logo_title_bar {
     background-color: #cc0b04;
 
+}*/
+
+.logo_title_bar {
+    background-color: silver;
 }
 
 
 .logo_graphic {
 	padding-top: 1%;
         height: 50px;
-        background-color: #cc0b04;/* just to show you the display box */
+        background-color: silver;/* just to show you the display box */
         text-align: center;
 }
 
@@ -112,8 +136,9 @@
 
 .body_row {
 	border: black 1pt solid;
-        background-color: darkgray;
+        background-color: white;
         padding-left: 1%;
+        font-family: 'Quando', serif;
         
         
         
@@ -131,6 +156,7 @@
         -webkit-border-radius: 10px;
         border-radius: 10px;
         border: 1px solid;
+        font-family: arial;
         
         
 }
@@ -146,6 +172,7 @@
         -webkit-border-radius: 10px;
         border-radius: 10px;
         border: 1px solid;
+        font-family: arial;
         
     
 }
@@ -162,6 +189,7 @@
         -webkit-border-radius: 10px;
         border-radius: 10px;
         border: 1px solid;
+        font-family: arial;
         
     
 }
@@ -177,6 +205,7 @@
         -webkit-border-radius: 10px;
         border-radius: 10px;
         border: 1px solid;
+        font-family: arial;
 }
 
 .teacher2 {
@@ -191,6 +220,7 @@
         -webkit-border-radius: 10px;
         border-radius: 10px;
         border: 1px solid;
+        font-family: arial;
 }
 
 .student3 {
@@ -204,6 +234,7 @@
         -webkit-border-radius: 10px;
         border-radius: 10px;
         border: 1px solid;
+        font-family: arial;
 }
 
 .right_col {
@@ -216,16 +247,19 @@
         -webkit-border-radius: 10px;
         border-radius: 10px;
         border: 1px solid;
+        font-family: cool_font;
         
 }
 
 .footer_bar {
 	text-align: center;
-        background-color: #cc0b04;
+        background-color: silver;
         -moz-border-radius-bottomleft: 10px;
         -webkit-border-bottom-left-radius: 10px;
         -moz-border-radius-bottomright: 10px;
         -webkit-border-bottom-right-radius: 10px;
+        font-family: cool_font;
+        color: white;
        
         
 }
@@ -236,11 +270,32 @@
     padding-bottom: 5%;
     font-size: 25px;
     font-weight: bold;
+    font-family: 'Shadows+Into+Light+Two';
 }
 
 .welcometext {
     text-align: left;
     font-size: 17px;
+    font-family: 'Shadows+Into+Light+Two';
+}
+
+.email_not {
+    text-align: center;
+    text-decoration: underline;
+    padding-bottom: 2%;
+    font-size: 25px;
+    font-weight: bold;
+}
+
+.email_text {
+    text-align: center;
+    font-size: 17px;
+}
+
+.update {
+    text-align: center;
+    font-size: 20px;
+    color: red;
 }
 
 /*.button {
@@ -280,7 +335,7 @@
 
    }*/
 
-.button {
+/*.button {
    border-top: 1px solid #cc0b04;
    background: #cc0b04;
    background: -webkit-gradient(linear, left top, left bottom, from(#cc0b04), to(#cc0b04));
@@ -310,9 +365,44 @@
    background: #fab300;
    color: white;
    }
-.button:active {
+.button:active, .current_page {
    border-top-color: #e06f0b;
    background: #e06f0b;
+   }*/
+
+.button {
+   border-top: 1px solid silver;
+   background: silver;
+   background: -webkit-gradient(linear, left top, left bottom, from(silver), to(silver));
+   background: -webkit-linear-gradient(top, silver, silver);
+   background: -moz-linear-gradient(top, silver, silver);
+   background: -ms-linear-gradient(top, silver, silver);
+   background: -o-linear-gradient(top, silver, silver);
+   padding: 5px 10px;
+   -webkit-border-radius: 4px;
+   -moz-border-radius: 4px;
+   border-radius: 4px;
+   -webkit-box-shadow: rgba(0,0,0,1) 0 1px 0;
+   -moz-box-shadow: rgba(0,0,0,1) 0 1px 0;
+   box-shadow: rgba(0,0,0,0) 0 1px 0;
+   text-shadow: rgba(0,0,0,.4) 0 1px 0;
+   color: white;
+   font-size: 18px;
+   font-family: Helvetica, Arial, Sans-Serif;
+   text-decoration: none;
+   text-align: center;
+   margin-bottom: 0.5%;
+   margin-top: 0.5%;
+   vertical-align: middle;
+   }
+.button:hover {
+   border-top-color: blue;
+   background: blue;
+   color: white;
+   }
+.button:active, .current_page {
+   border-top-color: #3A3A3A;
+   background: #3A3A3A;
    }
    
 .nav_bar a:link, .nav_bar a:hover, .nav_bar a:active, .nav_bar a:visited {
@@ -320,8 +410,13 @@
    }
    
    body{
-       background-color: darkgray;
+       background-color: white;
    }
+   
+.font-face {
+	font-family: cool_font;
+	src: url('GeosansLight.ttf');
+}
    
 /*.nav_bar .current_page {
     background-color: red;  
