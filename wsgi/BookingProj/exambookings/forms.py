@@ -1,4 +1,5 @@
 from django import forms
+from django.forms.extras.widgets import SelectDateWidget
 from exambookings.models import Booking
 from django.contrib.auth.models import Permission
 import userena.forms, re
@@ -10,6 +11,7 @@ class UpdateBookingForm(forms.ModelForm):
         model = Booking
 
 class CreateBookingForm(forms.ModelForm):
+    testDate = forms.DateField(widget=SelectDateWidget())
     class Meta:
         model = Booking
         exclude = ('courseTeacher',)
