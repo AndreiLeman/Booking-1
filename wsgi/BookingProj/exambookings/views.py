@@ -66,7 +66,13 @@ def bookings_list_for(user, incl_false_bool_fields = False):
                                                   kwargs={'pk':booking.pk}),
                                   'verbose_name': "Edit Link",
                                   'help_text': '',
-                                  'name': 'editUrl'}}
+                                  'name': 'editUrl'},
+                       'setCompletedUrl': {'value':reverse('set_booking_completed',
+                                                           kwargs={'pk':booking.pk}),
+                                           'verbose_name': "Test Taken",
+                                           'help_text': '',
+                                           'name': 'setCompletedUrl'}
+                       }
         for fieldname in BOOKING_fieldNames_ordered:
             fieldData = booking.fieldDataOf(fieldname)
             if incl_false_bool_fields or fieldData['value'] != False:
@@ -81,7 +87,7 @@ def bookings_list_fields_ordered_for(user, incl_false_bool_fields = False):
     bookings_list = bookings_list_for(user, incl_false_bool_fields)
     for i in range(len(bookings_list)):
         bookingData = bookings_list[i]
-        bookingDataOrderedList = [bookingData['editUrl']]
+        bookingDataOrderedList = [bookingData['editUrl'], bookingData['setCompletedUrl']]
         for f in BOOKING_fieldNames_ordered:
             if f in bookingData:
                 bookingDataOrderedList.append(bookingData[f])
@@ -138,6 +144,11 @@ def update_booking_view(request, pk):
     
     ctx['form'] = form
     return render_to_response('exambookings/update_booking.html', ctx)
+
+@staff_only_view
+def set_booking_completed_view(request, pk):
+    
+    return HttpResponseRedirect(reverse('create_booking'))
 
 
 def sign_up_view(request):

@@ -30,4 +30,7 @@ urlpatterns = patterns('',
                        url(r'^booking/(?P<pk>\d+)/$',
                            'exambookings.views.update_booking_view',
                            name='update_booking'),
+                       url(r'^booking/complete/(?P<pk>\d+)/$',
+                           'exambookings.views.set_booking_completed_view',
+                           name='set_booking_completed'),                       
 )

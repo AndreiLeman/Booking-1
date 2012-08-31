@@ -161,6 +161,8 @@ class Booking(models.Model):
     englishDictionaryThesaurusAllowance = models.BooleanField(verbose_name="ELL Dictionary/Thesaurus")
     otherAllowances = models.CharField(max_length=200, blank=True, verbose_name="Other Allowances")
 
+    testCompleted = models.BooleanField(verbose_name="Test Taken")
+
     class Meta:
         permissions = (
             ("teacher_view", "Can view teacher's own bookings"),
