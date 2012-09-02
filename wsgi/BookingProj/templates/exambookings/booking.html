@@ -60,8 +60,13 @@
 		  <dd style="width: 40%; float: left;"> {{ field.value }}</dd>
 		  {% endfor %}
 		</dl>
-		<p><a href="{{ booking.meta.editUrl.value }}">Edit</a></p>
-		<p><a href="{{ booking.meta.setCompletedUrl.value }}">Test Completed</a></p>		
+		<form id="" name="" method="get" action="{{ booking.meta.editUrl.value }}">
+		  <input type="submit" value="Edit" />
+		</form>
+		<form id="" name="" method="post" action="{{ booking.meta.setCompletedUrl.value }}">
+		  {% csrf_token %}
+		  <input type="submit" name="test_completed" id="id_test_completed" value="Test Completed" />
+		</form>		
 		<div style="clear:both"></div>
 		</div>
 		{% endfor %}

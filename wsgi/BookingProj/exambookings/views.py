@@ -148,7 +148,10 @@ def update_booking_view(request, pk):
 @staff_only_view
 @authorized_user_of_this_booking_only_view
 def set_booking_completed_view(request, pk):
-    
+    if request.method == 'POST':
+        appt = get_object_or_404(Booking, id__iexact=pk)
+        appt.testCompleted = True
+        appt.save()
     return HttpResponseRedirect(reverse('create_booking'))
 
 
