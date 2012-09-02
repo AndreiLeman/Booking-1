@@ -27,7 +27,10 @@ urlpatterns = patterns('',
                            'exambookings.views.static_page'), # test out way to serve static page as though it were dynamic
                        url(r'^accounts/$',
                            'exambookings.views.user_profile_view'),
-                       url(r'^booking/(?P<pk>\d+)/$',
+                       url(r'^booking/update/(?P<pk>\d+)/$',
                            'exambookings.views.update_booking_view',
                            name='update_booking'),
+                       url(r'^booking/complete/(?P<pk>\d+)/$',
+                           'exambookings.views.set_booking_completed_view',
+                           name='set_booking_completed'),                       
 )

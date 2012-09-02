@@ -49,10 +49,15 @@ BOOKING_fieldNames_ordered = ["studentFirstName",
                               'openBookNotesAllowance',
                               'computerInternetAllowance',
                               'englishDictionaryThesaurusAllowance',
-                              'otherAllowances']
+                              'otherAllowances',
+                              'testCompleted']
 
-def bookings_list_for(user, incl_false_bool_fields = False):
-    """ returns dictionary of bookings the user can view """
+def bookings_list_for(user, incl_false_bool_fields = False, orderedFields = False):
+    """ returns list of dictionaries representing a booking
+    appointment the user can view.
+    each booking is either a list if orderedFields == True,
+    else is a dict
+    """
     if (user.has_perm('exambookings.exam_center_view')):
         bookings = Booking.objects.all()
     elif (user.has_perm('exambookings.teacher_view')):
@@ -62,32 +67,33 @@ def bookings_list_for(user, incl_false_bool_fields = False):
 
     bookings_list = []
     for booking in bookings:
-        bookingData = {'editUrl':{'value':reverse('update_booking',
-                                                  kwargs={'pk':booking.pk}),
-                                  'verbose_name': "Edit Link",
-                                  'help_text': '',
-                                  'name': 'editUrl'}}
+        bookingObj = {'meta':'', 'data':''}
+        if orderedFields:
+            bookingObj['data'] = []
+        else:
+            bookingObj['data'] = {}
+
+        bookingObj['meta'] = {'editUrl':{'value':reverse('update_booking',
+                                                         kwargs={'pk':booking.pk}),
+                                         'verbose_name': "Edit Link",
+                                         'help_text': '',
+                                         'name': 'editUrl'},
+                              'setCompletedUrl': {'value':reverse('set_booking_completed',
+                                                                  kwargs={'pk':booking.pk}),
+                                                  'verbose_name': "Test Taken",
+                                                  'help_text': '',
+                                                  'name': 'setCompletedUrl'}
+                              }
         for fieldname in BOOKING_fieldNames_ordered:
             fieldData = booking.fieldDataOf(fieldname)
             if incl_false_bool_fields or fieldData['value'] != False:
-                bookingData.update({fieldname: fieldData})
-                    
-            # note bookingData is an unordered dictionary!
-        bookings_list.append(bookingData)
+                if not orderedFields:
+                    bookingObj['data'].update({fieldname: fieldData})
+                    # note bookingObj['data'] is an unordered dictionary!
+                else:
+                    bookingObj['data'].append(fieldData)
+        bookings_list.append(bookingObj)
     return bookings_list
-
-
-def bookings_list_fields_ordered_for(user, incl_false_bool_fields = False):
-    bookings_list = bookings_list_for(user, incl_false_bool_fields)
-    for i in range(len(bookings_list)):
-        bookingData = bookings_list[i]
-        bookingDataOrderedList = [bookingData['editUrl']]
-        for f in BOOKING_fieldNames_ordered:
-            if f in bookingData:
-                bookingDataOrderedList.append(bookingData[f])
-        bookings_list[i] = bookingDataOrderedList
-    return bookings_list
-    
 
 @staff_only_view
 def create_booking_view(request):
@@ -95,7 +101,7 @@ def create_booking_view(request):
     also provides a form to create a new booking appointment
     """
     ctx = create_standard_csrf_context(request)
-    ctx['bookings_list'] = bookings_list_fields_ordered_for(request.user)
+    ctx['bookings_list'] = bookings_list_for(request.user, orderedFields = True)
     
     form = CreateBookingForm()
     if request.method == 'POST':
@@ -113,7 +119,7 @@ def create_booking_view(request):
 @authorized_user_of_this_booking_only_view
 def update_booking_view(request, pk):
     ctx = create_standard_csrf_context(request)
-    ctx['bookings_list'] = bookings_list_fields_ordered_for(request.user)
+    ctx['bookings_list'] = bookings_list_for(request.user, orderedFields = True)
     
     if request.user.has_perm('exambookings.exam_center_view'):
         exam_center_view = True
@@ -138,6 +144,15 @@ def update_booking_view(request, pk):
     
     ctx['form'] = form
     return render_to_response('exambookings/update_booking.html', ctx)
+
+@staff_only_view
+@authorized_user_of_this_booking_only_view
+def set_booking_completed_view(request, pk):
+    if request.method == 'POST':
+        appt = get_object_or_404(Booking, id__iexact=pk)
+        appt.testCompleted = True
+        appt.save()
+    return HttpResponseRedirect(reverse('create_booking'))
 
 
 def sign_up_view(request):

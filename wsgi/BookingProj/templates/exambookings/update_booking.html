@@ -55,18 +55,21 @@
 		{% for booking in bookings_list %}
 		<div style="border: solid 1pt black; margin-bottom: 5px;">
 		<dl>
-		  {% for field in booking %}
-		  {% ifequal field.name 'editUrl' %}
-		  {% else %}
+		  {% for field in booking.data %}
 		  <dt style="width: 40%; float: left; text-align: left;">{{ field.verbose_name }}</dt>
 		  <dd style="width: 40%; float: left;"> {{ field.value }}</dd>
-		  {% endifequal %}
 		  {% endfor %}
 		</dl>
-		<p><a href="{{ booking.0.value }}">Edit</a></p>
+		<form id="" name="" method="get" action="{{ booking.meta.editUrl.value }}">
+		  <input type="submit" value="Edit" />
+		</form>
+		<form id="" name="" method="post" action="{{ booking.meta.setCompletedUrl.value }}">
+		  {% csrf_token %}
+		  <input type="submit" name="test_completed" id="id_test_completed" value="Test Completed" />
+		</form>
 		<div style="clear:both"></div>
 		</div>
-		{% endfor %}
+		{% endfor %}		
                 <p>&nbsp;</p>
             </div>
 
@@ -80,7 +83,7 @@
 		{% include "exambookings/form_hidden_fields.html" %}
 
 		{% for field in form %}
-		{% if field.html_name in "studentFirstName studentLastName studentGrade testCourseName testName testDate testDuration testPeriod examCenter" %}
+		{% if field.html_name in "studentFirstName studentLastName studentGrade testCourseName testName testDate testDuration testPeriod examCenter testCompleted" %}
                 <p>
                   <label class="signInFieldLabel"
                          for="id_{{ field.html_name }}">{{ field.label }}</label>
