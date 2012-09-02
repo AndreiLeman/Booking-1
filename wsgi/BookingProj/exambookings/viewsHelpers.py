@@ -1,3 +1,7 @@
+from django.shortcuts import get_object_or_404
+from django.http import HttpResponseForbidden
+from exambookings.models import Booking
+
 # reverse_lazy is included in Django 1.4
 from django.core.urlresolvers import reverse
 from django.utils.functional import lazy
@@ -12,6 +16,18 @@ def staff_only_view(function=None):
     if function:
         return actual_decorator(function)
     return actual_decorator
+
+def authorized_user_of_this_booking_only_view(function=None):
+    """ decorator expects decorated view function to have parameters: (request, pk)
+    pk is primary key of a Booking object
+    """
+    def wrapper(request, *args, **kwargs):
+        appt = get_object_or_404(Booking, id__iexact=kwargs['pk'])
+        if appt.courseTeacher == request.user or request.user.has_perm('exambookings.exam_center_view'):
+            return function(request, *args, **kwargs)
+        else:
+            return HttpResponseForbidden("<h1>Update Forbidden</h1> Only <b>exam center staff</b> and the <b>course teacher</b> of an appointment may make changes.", content_type="text/html")
+    return wrapper
 
 from django.utils.decorators import method_decorator
 class StaffOnlyViewMixin(object):

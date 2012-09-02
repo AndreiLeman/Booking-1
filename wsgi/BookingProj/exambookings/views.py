@@ -14,7 +14,7 @@ import userena.views
 import userena.settings
 
 from django.core.urlresolvers import reverse
-from exambookings.viewsHelpers import reverse_lazy, staff_only_view
+from exambookings.viewsHelpers import reverse_lazy, staff_only_view, authorized_user_of_this_booking_only_view
 
 def create_standard_context(request):
     ctx = {}
@@ -110,6 +110,7 @@ def create_booking_view(request):
 
 
 @staff_only_view
+@authorized_user_of_this_booking_only_view
 def update_booking_view(request, pk):
     ctx = create_standard_csrf_context(request)
     ctx['bookings_list'] = bookings_list_fields_ordered_for(request.user)
