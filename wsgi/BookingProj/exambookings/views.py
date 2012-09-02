@@ -146,6 +146,7 @@ def update_booking_view(request, pk):
     return render_to_response('exambookings/update_booking.html', ctx)
 
 @staff_only_view
+@authorized_user_of_this_booking_only_view
 def set_booking_completed_view(request, pk):
     
     return HttpResponseRedirect(reverse('create_booking'))
