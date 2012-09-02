@@ -95,19 +95,6 @@ def bookings_list_for(user, incl_false_bool_fields = False, orderedFields = Fals
         bookings_list.append(bookingObj)
     return bookings_list
 
-
-def bookings_list_fields_ordered_for(user, incl_false_bool_fields = False):
-    bookings_list = bookings_list_for(user, incl_false_bool_fields)
-    for i in range(len(bookings_list)):
-        bookingData = bookings_list[i]
-        bookingDataOrderedList = [bookingData['editUrl'], bookingData['setCompletedUrl']]
-        for f in BOOKING_fieldNames_ordered:
-            if f in bookingData:
-                bookingDataOrderedList.append(bookingData[f])
-        bookings_list[i] = bookingDataOrderedList
-    return bookings_list
-    
-
 @staff_only_view
 def create_booking_view(request):
     """ shows bookings available to be seen by logged-in user
