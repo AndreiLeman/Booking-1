@@ -55,16 +55,13 @@
 		{% for booking in bookings_list %}
 		<div style="border: solid 1pt black; margin-bottom: 5px;">
 		<dl>
-		  {% for field in booking %}
-		  {% ifequal field.name 'editUrl' %}
-		  {% else %}
+		  {% for field in booking.data %}
 		  <dt style="width: 40%; float: left; text-align: left;">{{ field.verbose_name }}</dt>
 		  <dd style="width: 40%; float: left;"> {{ field.value }}</dd>
-		  {% endifequal %}
 		  {% endfor %}
 		</dl>
-		<p><a href="{{ booking.0.value }}">Edit</a></p>
-		<p><a href="{{ booking.1.value }}">Test Completed</a></p>		
+		<p><a href="{{ booking.meta.editUrl.value }}">Edit</a></p>
+		<p><a href="{{ booking.meta.setCompletedUrl.value }}">Test Completed</a></p>		
 		<div style="clear:both"></div>
 		</div>
 		{% endfor %}
