@@ -2,9 +2,9 @@ from secure_settings import SECURE_SETTINGS
 
 # Django settings for production vs development
 ###############################################
-DEBUG = True
-TEMPLATE_DEBUG = DEBUG
-USE_DUMMY_EMAIL_SERVER = False
+DEBUG = False
+TEMPLATE_DEBUG = DEBUG 
+USE_DUMMY_EMAIL_SERVER = False 
 ###############################################
 
 import os
