@@ -52,16 +52,23 @@ BOOKING_fieldNames_ordered = ["studentFirstName",
                               'otherAllowances',
                               'testCompleted']
 
-def bookings_list_for(user, incl_false_bool_fields = False, orderedFields = False):
+def bookings_list_for(user, incl_false_bool_fields = False, orderedFields = False, sortAppts = True):
     """ returns list of dictionaries representing a booking
     appointment the user can view.
     each booking is either a list if orderedFields == True,
     else is a dict
     """
+    order_by_args = ('testDate', 'testPeriod', 'studentFirstName', 'studentLastName')
     if (user.has_perm('exambookings.exam_center_view')):
-        bookings = Booking.objects.all()
+        if sortAppts:
+            bookings = Booking.objects.all().order_by(*order_by_args)
+        else:
+            bookings = Booking.objects.all()
     elif (user.has_perm('exambookings.teacher_view')):
-        bookings = Booking.objects.filter(courseTeacher=user)
+        if sortAppts:
+            bookings = Booking.objects.filter(courseTeacher=user).order_by(*order_by_args)
+        else:
+            bookings = Booking.objects.filter(courseTeacher=user)
     else:
         bookings = []
 
