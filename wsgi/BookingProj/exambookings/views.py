@@ -4,7 +4,6 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, render_to_response
 from django.http import HttpResponseRedirect
 from django.template import RequestContext
-from django.core.context_processors import csrf
 
 from django.contrib.auth.models import User
 from exambookings.models import Booking
@@ -15,17 +14,6 @@ import userena.settings
 
 from django.core.urlresolvers import reverse
 from exambookings.viewsHelpers import reverse_lazy, staff_only_view, authorized_user_of_this_booking_only_view
-
-def create_standard_context(request):
-    ctx = {}
-    if request.user.is_authenticated():
-        ctx['user_logged_in'] = True
-    return ctx
-
-def create_standard_csrf_context(request):
-    ctx = create_standard_context(request)
-    ctx.update(csrf(request))
-    return ctx
 
 
 BOOKING_fieldNames_ordered = ["studentFirstName",

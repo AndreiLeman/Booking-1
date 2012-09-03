@@ -2,6 +2,8 @@ from django.shortcuts import get_object_or_404
 from django.http import HttpResponseForbidden
 from exambookings.models import Booking
 
+from django.core.context_processors import csrf
+
 # reverse_lazy is included in Django 1.4
 from django.core.urlresolvers import reverse
 from django.utils.functional import lazy
@@ -36,3 +38,16 @@ class StaffOnlyViewMixin(object):
     @method_decorator(any_permission_required('exambookings.teacher_view', 'exambookings.exam_center_view'))
     def dispatch(self, *args, **kwargs):
         return super(StaffOnlyViewMixin, self).dispatch(*args, **kwargs)
+
+
+
+def create_standard_context(request):
+    ctx = {}
+    if request.user.is_authenticated():
+        ctx['user_logged_in'] = True
+    return ctx
+
+def create_standard_csrf_context(request):
+    ctx = create_standard_context(request)
+    ctx.update(csrf(request))
+    return ctx
