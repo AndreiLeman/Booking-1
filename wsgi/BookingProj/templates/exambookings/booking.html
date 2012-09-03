@@ -160,7 +160,7 @@
 		  {% for day in availableAppts %}
 		  <ol class="day rowHeader">
 		    <li class="period colHeader">{{ day.date.month }}/{{ day.date.day }}</li>
-		    {% for period in availableAppts.0.stats %}
+		    {% for period in day.stats %}
 		    <li class="period">
 		      {{ period.apptCount }}
 		    </li>
