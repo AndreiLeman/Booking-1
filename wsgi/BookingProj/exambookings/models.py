@@ -1,5 +1,6 @@
-from django.db import models
+from django.db import models, transaction
 from django.core.urlresolvers import reverse
+from django.core.exceptions import ValidationError
 #import datetime
 
 #from profiles.models import BaseProfile
@@ -97,6 +98,8 @@ class Period():
         )
     TIME_VERBOSE_NAME_MAP = dict(CHOICES)
 
+EXAM_CENTER_RM_100_CAPACITY = 30
+
 class Booking(models.Model):
     GRADE_TEN = 10
     GRADE_ELEVEN = 11
@@ -189,6 +192,18 @@ class Booking(models.Model):
                             'testName',
                             'testDate',
                             'testPeriod',),)
+
+    def clean(self):
+        if Booking.countAppts(self.testDate, self.testPeriod) >= EXAM_CENTER_RM_100_CAPACITY:
+            raise ValidationError(Period.TIME_VERBOSE_NAME_MAP[self.testPeriod] + ' on ' + str(self.testDate) + ' is full.')
+
+    def save(self):
+        """ may throw ValidationError from full_clean
+        """
+        with transaction.commit_on_success():
+            print "doing transaction"
+            self.full_clean()
+            super(Booking, self).save()
 
     @classmethod
     def getFieldnamesStdOrder(cls):
