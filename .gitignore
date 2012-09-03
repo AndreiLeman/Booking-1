@@ -1,6 +1,7 @@
 *.pyc
 *.pyo
 *.*~
+*~
 .thumbnails
 ._*
 .DS_Store
