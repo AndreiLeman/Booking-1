@@ -1,0 +1,6 @@
+#!/bin/bash
+
+source $OPENSHIFT_GEAR_DIR/virtenv/bin/activate
+
+python "$OPENSHIFT_REPO_DIR"wsgi/BookingProj/manage.py clearbookings
+
