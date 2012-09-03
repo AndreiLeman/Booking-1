@@ -4,7 +4,13 @@ from django.contrib.auth.models import User
 
 from userena.models import UserenaBaseProfile
 
-import datetime
+def prettyNameOfUser(u):
+    s = u.get_full_name()
+    if len(s) == 0:
+        s = u.email
+    else:
+        s += " (" + u.email + ")"
+    return s
 
 class BaseProfile(UserenaBaseProfile):
     """ Default profile """
