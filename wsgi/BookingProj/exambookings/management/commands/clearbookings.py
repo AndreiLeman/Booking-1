@@ -2,7 +2,7 @@ from django.core.management.base import BaseCommand, CommandError
 from exambookings.models import Booking
 from django.db.models import Q
 from django.core.mail import send_mail
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Permission
 import datetime
 #import exceptions
 
@@ -15,11 +15,14 @@ cutoffDay = today - datetime.timedelta(days=1)
 # appt/test completed are deleted
 # anything completed or deleted needs to be in a report emailed to appropriate users daily
 
+perm = Permission.objects.get(codename='exam_center_view')
+examCenterStaffEmails = list(set(User.objects.filter(Q(user_permissions=perm) | Q(groups__permissions=perm)).values_list('email', flat=True)))
+
 class ReportEmail():
     fromEmail = 'mrccheng0@example.com'    
     individualReportSubject = "[Exam Center Report]: " + str(today.strftime("%Y %b %d"))
-    fullReportSubject = "[Exam Center Full Report]: " + str(today.strftime("%Y %b %d"))    
-    fullReportRecipientEmails = ['mrccheng0@example.com']
+    fullReportSubject = "[Exam Center Full Report]: " + str(today.strftime("%Y %b %d"))
+    fullReportRecipientEmails = examCenterStaffEmails
 
 class Command(BaseCommand):
     args = 'none'
