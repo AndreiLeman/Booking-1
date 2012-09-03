@@ -58,15 +58,17 @@ def bookings_list_for(user, incl_false_bool_fields = False, orderedFields = Fals
     each booking is either a list if orderedFields == True,
     else is a dict
     """
-    order_by_args = ('testDate', 'testPeriod', 'studentFirstName', 'studentLastName')
+    order_by_args = ('testDate', 'testPeriod', 'lower_studentFirstName', 'lower_studentLastName')
     if (user.has_perm('exambookings.exam_center_view')):
         if sortAppts:
-            bookings = Booking.objects.all().order_by(*order_by_args)
+            bookings = Booking.objects.all().extra(select={'lower_studentFirstName': 'lower(studentFirstName)',
+                                                           'lower_studentLastName': 'lower(studentLastName)'}).order_by(*order_by_args)
         else:
             bookings = Booking.objects.all()
     elif (user.has_perm('exambookings.teacher_view')):
         if sortAppts:
-            bookings = Booking.objects.filter(courseTeacher=user).order_by(*order_by_args)
+            bookings = Booking.objects.filter(courseTeacher=user).extra(select={'lower_studentFirstName': 'lower(studentFirstName)',
+                                                                                'lower_studentLastName': 'lower(studentLastName)'}).order_by(*order_by_args)
         else:
             bookings = Booking.objects.filter(courseTeacher=user)
     else:
