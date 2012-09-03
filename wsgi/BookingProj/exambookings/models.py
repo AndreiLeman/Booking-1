@@ -4,6 +4,7 @@ from django.core.exceptions import ValidationError
 
 #from profiles.models import BaseProfile
 from django.contrib.auth.models import User
+from profiles.models import prettyNameOfUser
 
 import datetime
 ONE_DAY = datetime.timedelta(days=1)
@@ -258,7 +259,7 @@ class Booking(models.Model):
                'help_text': f.help_text,
                'value': eval("self."+attname)}
         if fieldNameStr  == 'courseTeacher':
-            data['value'] = self.courseTeacher # avoids showing foreign key id
+            data['value'] = prettyNameOfUser(self.courseTeacher) # avoids showing foreign key id
         elif fieldNameStr == 'testPeriod':
             data['value'] = Period.TIME_VERBOSE_NAME_MAP[data['value']]
         return data

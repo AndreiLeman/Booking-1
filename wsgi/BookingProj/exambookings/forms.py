@@ -1,13 +1,19 @@
 from django import forms
 from django.forms.extras.widgets import SelectDateWidget
 from exambookings.models import Booking
-from django.contrib.auth.models import Permission
+from django.contrib.auth.models import User, Permission
 import userena.forms, re
 from exambookings import settings
+from profiles.models import prettyNameOfUser
 
 
+class UserModelChoiceField(forms.ModelChoiceField):
+    def label_from_instance(self, usr):
+         return prettyNameOfUser(usr)
+    
 class UpdateBookingForm(forms.ModelForm):
     testDate = forms.DateField(widget=SelectDateWidget(), label="Test on Date")
+    courseTeacher = UserModelChoiceField(queryset=User.objects.all(), label="Course Teacher")
     class Meta:
         model = Booking
 
