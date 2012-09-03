@@ -265,11 +265,11 @@ class Booking(models.Model):
         else:
             bookings = []
 
-            if sortAppts and bookings != []:
-                bookings = bookings.extra(select={'lower_studentFirstName': 'lower(studentFirstName)',
-                                                  'lower_studentLastName': 'lower(studentLastName)'}).order_by('testDate', 'testPeriod',
-                                                                                                               'lower_studentFirstName',
-                                                                                                               'lower_studentLastName')
+        if sortAppts and bookings != []:
+            bookings = bookings.extra(select={'lower_studentFirstName': 'lower(studentFirstName)',
+                                              'lower_studentLastName': 'lower(studentLastName)'}).order_by('testDate', 'testPeriod',
+                                                                                                           'lower_studentFirstName',
+                                                                                                           'lower_studentLastName')
         bookings_list = []
         for booking in bookings:
             bookingObj = {'meta':'', 'data':''}
