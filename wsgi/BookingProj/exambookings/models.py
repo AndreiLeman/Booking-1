@@ -181,10 +181,14 @@ class Booking(models.Model):
     def fieldDataOf(self, fieldNameStr):
         f = self._meta.get_field(fieldNameStr)
         attname = f.get_attname()
-        return {'name': attname,
-                'verbose_name': f.verbose_name,
-                'help_text': f.help_text,
-                'value': eval("self."+attname)}
+        data= {'name': fieldNameStr,
+               'attname': attname, # could be different from fieldNameStr, e.g. courseTeacher_id
+               'verbose_name': f.verbose_name,
+               'help_text': f.help_text,
+               'value': eval("self."+attname)}
+        if fieldNameStr  == 'courseTeacher':
+            data['value'] = self.courseTeacher # avoids showing foreign key id
+        return data
 
 #Relations
 # class StudentBelongsToCourse(models.Model):
