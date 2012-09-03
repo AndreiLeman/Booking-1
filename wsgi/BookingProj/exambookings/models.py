@@ -225,6 +225,8 @@ class Booking(models.Model):
                'value': eval("self."+attname)}
         if fieldNameStr  == 'courseTeacher':
             data['value'] = self.courseTeacher # avoids showing foreign key id
+        elif fieldNameStr == 'testPeriod':
+            data['value'] = PERIOD_TIME_NAME_MAP[data['value']]
         return data
 
     def getNormalizedDataOfFields(self, fieldNamesList=None, orderedFields=False, incl_false_bool_fields=False):
