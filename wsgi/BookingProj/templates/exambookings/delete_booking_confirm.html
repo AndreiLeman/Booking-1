@@ -43,65 +43,41 @@
 
     <!-- Your web page content goes below -->
 
-
     <div class="container"> <!-- 1140 layout begins -->
 
-
         <div class="row logo_title_bar">
-	  {% include "exambookings/logo_title_bar.html" %}
+	  {% include "exambookings/logo_title_bar.html" %}	  
         </div>
 
         <div class="row body_row">
             <div class="sixcol left_col">
                 <p>&nbsp;</p>
-                <div class="welcome">
-                    <h1>Welcome</h1>
-                </div>
-                <div class="welcometext">
-                    <p>Welcome to E.M Bookit! This is a website used to simplify the exam room booking experience.
-                       This website should help to make the task of booking an exam room for a student much more pleasant.</p>
-                <p>&nbsp;</p>
-                
-                </div>
-                
-
-            </div>
-            <div class="sixcol last right_col">
-                <form id="id_signInForm" name="signInForm" method="post" action="">
+		<div style="border: solid 1pt black; margin-bottom: 5px;">
+		<dl>
+		  {% for field in bookingData %}
+		  <dt style="width: 40%; float: left; text-align: left;">{{ field.verbose_name }}</dt>
+		  <dd style="width: 40%; float: left;"> {{ field.value }}</dd>
+		  {% endfor %}
+		</dl>
+		<form id="" name="" method="post" action="">
 		  {% csrf_token %}
-		  {{ form.non_field_errors }}
-		  <p>&nbsp;</p>
-                  <label class="signInFieldLabel" for="userName">Log-In</label>
-                  <p>&nbsp;</p>
-    {% for field in form %}
-    {{ field.errors }}
-    {% comment %} Displaying checkboxes differently {% endcomment %}
-    <p>
-    <label class="signInFieldLabel" for="id_{{ field.html_name }}">{{ field.label }}</label>
-    {{ field|add_class:'signInFieldInput' }}
-    </p>
-    {% endfor %}
-    <input type="hidden" name="next" value="{{ redirect_to }}" />
-                  <p>&nbsp;</p>
-                  <p>&nbsp;</p>
-                  <div class="submit">
-                    <p>
-                      <label>
-			<input type="submit" name="Submit" id="Submit" value="Submit" />			
-                      </label>
-                    </p>
-                  </div>
-                </form>
+		  <input type="submit" name="" id="" value="Delete Appointment Permanently" />
+		</form>		
+		<div style="clear:both"></div>
+		</div>
+                <p>&nbsp;</p>
             </div>
-        </div>
+
+            <div class="sixcol last right_col">
+            </div>
+        </div>      
 
         <div class="row footer_bar">
-	  {% include "exambookings/footer_bar.html" %}	  
+	  {% include "exambookings/footer_bar.html" %}
         </div>
 
 
-    </div>
-<!-- 1140 layout ends -->
+    </div> <!-- 1140 layout ends -->
     <!--  
     <div class="column">
       <h1>Content Headline</h1>

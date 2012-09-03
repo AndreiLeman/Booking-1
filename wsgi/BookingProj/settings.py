@@ -4,7 +4,7 @@ from secure_settings import SECURE_SETTINGS
 ###############################################
 DEBUG = False
 TEMPLATE_DEBUG = DEBUG 
-USE_DUMMY_EMAIL_SERVER = False 
+USE_DEV_EMAIL_SERVER = False
 ###############################################
 
 import os
@@ -143,8 +143,9 @@ AUTHENTICATION_BACKENDS = (
 )
 
 # Email Settings - used by Userena as well
-if USE_DUMMY_EMAIL_SERVER:
-    EMAIL_BACKEND = 'django.core.mail.backends.dummy.EmailBackend' #for development
+if USE_DEV_EMAIL_SERVER:
+#    EMAIL_BACKEND = 'django.core.mail.backends.dummy.EmailBackend' #for development
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 else:
     EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend' #for production
 

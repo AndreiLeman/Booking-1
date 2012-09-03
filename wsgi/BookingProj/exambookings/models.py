@@ -1,8 +1,12 @@
-from django.db import models
-#import datetime
+from django.db import models, transaction
+from django.core.urlresolvers import reverse
+from django.core.exceptions import ValidationError
 
 #from profiles.models import BaseProfile
 from django.contrib.auth.models import User
+
+import datetime
+ONE_DAY = datetime.timedelta(days=1)
 
 # Create your models here.
 # class StudentProfile(models.Model):
@@ -77,6 +81,27 @@ from django.contrib.auth.models import User
 #             ("exam_center_view", "Can view all bookings"),
 #             )
 
+class Period():
+    TUTORIAL = 830
+    ONE = 900
+    TWO = 1030
+    LUNCH = 1200
+    THREE = 1230
+    FOUR = 1400
+    AFTERSCHOOL = 1530
+    CHOICES = (
+        (TUTORIAL, 'Tutorial Time'),
+        (ONE, 'Period 1'),
+        (TWO, 'Period 2'),
+        (LUNCH, 'Lunch Time'),
+        (THREE, 'Period 3'),
+        (FOUR, 'Period 4'),
+        (AFTERSCHOOL, 'After School'),
+        )
+    TIME_VERBOSE_NAME_MAP = dict(CHOICES)
+
+EXAM_CENTER_RM_100_CAPACITY = 30
+
 class Booking(models.Model):
     GRADE_TEN = 10
     GRADE_ELEVEN = 11
@@ -92,22 +117,14 @@ class Booking(models.Model):
         (EXAM_CENTER_RM_100, "Main Exam Center - Rm 100"),
         )
     
-    PERIOD_TUTORIAL = 830
-    PERIOD_ONE = 900
-    PERIOD_TWO = 1030
-    PERIOD_LUNCH = 1200
-    PERIOD_THREE = 1230
-    PERIOD_FOUR = 1400
-    PERIOD_AFTERSCHOOL = 1530
-    TEST_PERIOD_CHOICES = (
-        (PERIOD_TUTORIAL, 'Tutorial Time'),
-        (PERIOD_ONE, 'Period 1'),
-        (PERIOD_TWO, 'Period 2'),
-        (PERIOD_LUNCH, 'Lunch Time'),
-        (PERIOD_THREE, 'Period 3'),
-        (PERIOD_FOUR, 'Period 4'),
-        (PERIOD_AFTERSCHOOL, 'After School'),
-        )
+    PERIOD_TUTORIAL = Period.TUTORIAL
+    PERIOD_ONE = Period.ONE
+    PERIOD_TWO = Period.TWO
+    PERIOD_LUNCH = Period.LUNCH
+    PERIOD_THREE = Period.THREE
+    PERIOD_FOUR = Period.FOUR
+    PERIOD_AFTERSCHOOL = Period.AFTERSCHOOL
+    TEST_PERIOD_CHOICES = Period.CHOICES
 
     # studentProfile = models.ForeignKey(StudentProfile)
     studentFirstName = models.CharField(max_length=30,
@@ -178,13 +195,168 @@ class Booking(models.Model):
                             'testDate',
                             'testPeriod',),)
 
+    def __repr__(self):
+        s = (self.studentFirstName + " " + self.studentLastName)
+        s += (" in " + self.testCourseName + ": ")
+        if self.testCompleted:
+            done = " is completed on "
+        else:
+            done = " is NOT completed on "
+        s += ("Test " + self.testName + done)
+        s += (str(self.testDate) + " " + Period.TIME_VERBOSE_NAME_MAP[self.testPeriod])
+
+        return s
+#        return super(Booking, self).__repr__()
+
+    def __str__(self):
+        return self.__repr__()
+        
+    def clean(self):
+        if Booking.countAppts(self.testDate, self.testPeriod) >= EXAM_CENTER_RM_100_CAPACITY:
+            raise ValidationError(Period.TIME_VERBOSE_NAME_MAP[self.testPeriod] + ' on ' + str(self.testDate) + ' is full.')
+
+    def save(self):
+        """ may throw ValidationError from full_clean
+        """
+        with transaction.commit_on_success():
+            print "doing transaction"
+            self.full_clean()
+            super(Booking, self).save()
+
+    @classmethod
+    def getFieldnamesStdOrder(cls):
+        return ["studentFirstName",
+                "studentLastName",
+                'studentGrade',
+                "testCourseName",
+                "courseTeacher",
+                'testName',
+                'testDuration',
+                'testDate',
+                "testPeriod",
+                "examCenter",
+                'extendedTimeAccomodation',
+                'computerAccomodation',
+                'scribeAccomodation',
+                'enlargementsAccomodation',
+                'readerAccomodation',
+                'isolationQuietAccomodation',
+                'ellDictionaryAllowance',
+                'calculatorManipulativesAllowance',
+                'openBookNotesAllowance',
+                'computerInternetAllowance',
+                'englishDictionaryThesaurusAllowance',
+                'otherAllowances',
+                'testCompleted']
+
     def fieldDataOf(self, fieldNameStr):
         f = self._meta.get_field(fieldNameStr)
         attname = f.get_attname()
-        return {'name': attname,
-                'verbose_name': f.verbose_name,
-                'help_text': f.help_text,
-                'value': eval("self."+attname)}
+        data= {'name': fieldNameStr,
+               'attname': attname, # could be different from fieldNameStr, e.g. courseTeacher_id
+               'verbose_name': f.verbose_name,
+               'help_text': f.help_text,
+               'value': eval("self."+attname)}
+        if fieldNameStr  == 'courseTeacher':
+            data['value'] = self.courseTeacher # avoids showing foreign key id
+        elif fieldNameStr == 'testPeriod':
+            data['value'] = Period.TIME_VERBOSE_NAME_MAP[data['value']]
+        return data
+
+    def getNormalizedDataOfFields(self, fieldNamesList=None, orderedFields=False, incl_false_bool_fields=False):
+        """ returns fields indicated in fieldNamesList using fieldDataOf()
+        in either an ordered list or dict depending on orderedFields
+        """
+        if fieldNamesList == None:
+            fieldNamesList = Booking.getFieldnamesStdOrder()
+            
+        if orderedFields:
+            data = []
+        else:
+            data = {}
+            
+        for fieldname in fieldNamesList:
+            fieldData = self.fieldDataOf(fieldname)
+            if incl_false_bool_fields or fieldData['value'] != False:
+                if orderedFields:
+                    data.append(fieldData)
+                else:
+                    data.update({fieldname: fieldData})
+        return data
+
+    @classmethod
+    def getAllObjectsDataNormalizedForUser(cls, user, incl_false_bool_fields = False, orderedFields = True, sortAppts = True):
+        """ returns list of dictionaries representing a booking
+        appointment the user can view.
+        each booking is either a list if orderedFields == True,
+        else is a dict
+        """
+        if (user.has_perm('exambookings.exam_center_view')):
+            bookings = cls.objects.all()
+        elif (user.has_perm('exambookings.teacher_view')):
+            bookings = cls.objects.filter(courseTeacher=user)
+        else:
+            bookings = []
+
+        if sortAppts and bookings != []:
+            bookings = bookings.extra(select={'lower_studentFirstName': 'lower(studentFirstName)',
+                                              'lower_studentLastName': 'lower(studentLastName)'}).order_by('testDate', 'testPeriod',
+                                                                                                           'lower_studentFirstName',
+                                                                                                           'lower_studentLastName')
+        bookings_list = []
+        for booking in bookings:
+            bookingObj = {'meta':'', 'data':''}
+            bookingObj['meta'] = {'editUrl':{'value':reverse('update_booking',
+                                                             kwargs={'pk':booking.pk}),
+                                             'verbose_name': "Edit Booking",
+                                             'help_text': '',
+                                             'name': 'editUrl'},
+                                  'setCompletedUrl': {'value':reverse('set_booking_completed',
+                                                                      kwargs={'pk':booking.pk}),
+                                                      'verbose_name': "Test Taken",
+                                                      'help_text': '',
+                                                      'name': 'setCompletedUrl'},
+                                  'deleteUrl': {'value':reverse('delete_booking',
+                                                                kwargs={'pk':booking.pk}),
+                                                'verbose_name': "Delete Booking",
+                                                'help_text': '',
+                                                'name': 'deleteUrl'}
+                                  }
+            bookingObj['data'] = booking.getNormalizedDataOfFields(orderedFields=orderedFields, incl_false_bool_fields=incl_false_bool_fields)
+            bookings_list.append(bookingObj)
+        return bookings_list
+
+    @classmethod
+    def countAppts(cls, aDatetime, aPeriod):
+        """ aPeriod is Period.ONE, etc.
+        """
+        return cls.objects.filter(testDate=aDatetime, testPeriod=aPeriod).count()
+
+    @classmethod
+    def apptStats(cls, days = 1, showApptsAvailable = False, verbosePeriodName = True):
+        """ provide counts of appts in each period in next days
+        """
+        day = datetime.date.today()
+        
+        allStats = []
+        for x in range(days):
+            dayStats = []
+            for k,v in Period.CHOICES:
+                if showApptsAvailable:
+                    apptCnt = EXAM_CENTER_RM_100_CAPACITY - cls.countAppts(day, k)
+                else:
+                    apptCnt = cls.countAppts(day, k)
+                if verbosePeriodName:
+                    perName = Period.TIME_VERBOSE_NAME_MAP[k]
+                else:
+                    perName = k
+                dayStats.append({'periodName':perName, 'apptCount': apptCnt})
+            allStats.append({'date': day, 'stats': dayStats})
+            day += ONE_DAY
+            
+        return allStats
+    
+
 
 #Relations
 # class StudentBelongsToCourse(models.Model):

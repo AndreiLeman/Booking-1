@@ -51,14 +51,25 @@
 
         <div class="row body_row">
             <div class="sixcol left_col">
+
+	      
                 <p>&nbsp;</p>
 		{% for booking in bookings_list %}
 		<div style="border: solid 1pt black; margin-bottom: 5px;">
 		<dl>
+		  {% if exam_center_view %}		  
 		  {% for field in booking.data %}
 		  <dt style="width: 40%; float: left; text-align: left;">{{ field.verbose_name }}</dt>
 		  <dd style="width: 40%; float: left;"> {{ field.value }}</dd>
 		  {% endfor %}
+		  {% else %}
+		  {% for field in booking.data %}
+		  {% ifnotequal field.name 'courseTeacher' %}
+		  <dt style="width: 40%; float: left; text-align: left;">{{ field.verbose_name }}</dt>
+		  <dd style="width: 40%; float: left;"> {{ field.value }}</dd>
+		  {% endifnotequal %}
+		  {% endfor %}		  
+		  {% endif %}
 		</dl>
 		<form id="" name="" method="get" action="{{ booking.meta.editUrl.value }}">
 		  <input type="submit" value="Edit" />
@@ -66,7 +77,10 @@
 		<form id="" name="" method="post" action="{{ booking.meta.setCompletedUrl.value }}">
 		  {% csrf_token %}
 		  <input type="submit" name="test_completed" id="id_test_completed" value="Test Completed" />
-		</form>		
+		</form>
+		<form id="" name="" method="get" action="{{ booking.meta.deleteUrl.value }}">
+		  <input type="submit" name="" id="" value="Delete" />
+		</form>
 		<div style="clear:both"></div>
 		</div>
 		{% endfor %}
@@ -74,6 +88,9 @@
             </div>
 
             <div class="sixcol last right_col">
+                <div class="update">
+	                <p>Create Appointment</p>
+	            </div>	      
               <form id="form1" name="form1" method="post" action="">
 		{% csrf_token %}
 		{{ form.non_field_errors }}
@@ -125,14 +142,37 @@
                 </p>
                 </div>
               </form>
-            </div>
-        </div>      
-
+	    
+	      <div class="apptStatsBox">
+		<h2>Spaces Available</h2>
+		<p>As of {{ refreshTime }}.</p>
+		<p>This does not show periods tumbling!!</p>
+		<ol class="apptStats">
+		  <ol class="day rowHeaders">
+		    <li class="period colHeader"></li>
+		    {% for period in availableAppts.0.stats %}
+		    <li class="period">
+		      {{ period.periodName }}
+		    </li>
+		    {% endfor %}
+		  </ol>
+		  
+		  {% for day in availableAppts %}
+		  <ol class="day rowHeader">
+		    <li class="period colHeader">{{ day.date.month }}/{{ day.date.day }}</li>
+		    {% for period in availableAppts.0.stats %}
+		    <li class="period">
+		      {{ period.apptCount }}
+		    </li>
+		    {% endfor %}
+		  </ol>
+		  {% endfor %}
+		</ol>
+	      </div>
+            </div>      
+        </div>
         <div class="row footer_bar">
-            <div class="twelvecol last">CopyRight 2012 EM Bookit</div>
-            <p>&nbsp;</p>
-            <li><a href="team_bio.html">Team Bio</a></li>
-            <p>&nbsp;</p>
+	  {% include "exambookings/footer_bar.html" %}
         </div>
 
 

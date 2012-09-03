@@ -55,10 +55,19 @@
 		{% for booking in bookings_list %}
 		<div style="border: solid 1pt black; margin-bottom: 5px;">
 		<dl>
+		  {% if exam_center_view %}		  
 		  {% for field in booking.data %}
 		  <dt style="width: 40%; float: left; text-align: left;">{{ field.verbose_name }}</dt>
 		  <dd style="width: 40%; float: left;"> {{ field.value }}</dd>
 		  {% endfor %}
+		  {% else %}
+		  {% for field in booking.data %}
+		  {% ifnotequal field.name 'courseTeacher' %}
+		  <dt style="width: 40%; float: left; text-align: left;">{{ field.verbose_name }}</dt>
+		  <dd style="width: 40%; float: left;"> {{ field.value }}</dd>
+		  {% endifnotequal %}
+		  {% endfor %}		  
+		  {% endif %}
 		</dl>
 		<form id="" name="" method="get" action="{{ booking.meta.editUrl.value }}">
 		  <input type="submit" value="Edit" />
@@ -67,6 +76,9 @@
 		  {% csrf_token %}
 		  <input type="submit" name="test_completed" id="id_test_completed" value="Test Completed" />
 		</form>
+		<form id="" name="" method="get" action="{{ booking.meta.deleteUrl.value }}">
+		  <input type="submit" name="" id="" value="Delete" />
+		</form>		
 		<div style="clear:both"></div>
 		</div>
 		{% endfor %}		
@@ -75,7 +87,7 @@
 
             <div class="sixcol last right_col">
                 <div class="update">
-	                <p>UPDATE</p>
+	                <p>Update Appointment</p>
 	            </div>
               <form id="form1" name="form1" method="post" action="">
 		{% csrf_token %}
@@ -145,10 +157,7 @@
         </div>      
 
         <div class="row footer_bar">
-            <div class="twelvecol last">CopyRight 2012 EM Bookit</div>
-            <p>&nbsp;</p>
-            <li><a href="team_bio.html">Team Bio</a></li>
-            <p>&nbsp;</p>
+	  {% include "exambookings/footer_bar.html" %}	  	  	  	  
         </div>
 
 

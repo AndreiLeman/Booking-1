@@ -1,99 +1,21 @@
-from django.contrib import messages
+#from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 
 from django.shortcuts import get_object_or_404, render_to_response
 from django.http import HttpResponseRedirect
-from django.template import RequestContext
-from django.core.context_processors import csrf
+#from django.template import RequestContext
 
 from django.contrib.auth.models import User
-from exambookings.models import Booking
+from exambookings.models import Booking, Period
 from exambookings.forms import CreateBookingForm, ExamBookingSignupForm, ExamBookingAuthForm, UpdateBookingForm
 
 import userena.views
 import userena.settings
 
 from django.core.urlresolvers import reverse
-from exambookings.viewsHelpers import reverse_lazy, staff_only_view, authorized_user_of_this_booking_only_view
+from exambookings.viewsHelpers import *
 
-def create_standard_context(request):
-    ctx = {}
-    if request.user.is_authenticated():
-        ctx['user_logged_in'] = True
-    return ctx
-
-def create_standard_csrf_context(request):
-    ctx = create_standard_context(request)
-    ctx.update(csrf(request))
-    return ctx
-
-
-BOOKING_fieldNames_ordered = ["studentFirstName",
-                              "studentLastName",
-                              'studentGrade',
-                              "testCourseName",
-                              "courseTeacher",
-                              'testName',
-                              'testDuration',
-                              'testDate',
-                              "testPeriod",
-                              "examCenter",
-                              'extendedTimeAccomodation',
-                              'computerAccomodation',
-                              'scribeAccomodation',
-                              'enlargementsAccomodation',
-                              'readerAccomodation',
-                              'isolationQuietAccomodation',
-                              'ellDictionaryAllowance',
-                              'calculatorManipulativesAllowance',
-                              'openBookNotesAllowance',
-                              'computerInternetAllowance',
-                              'englishDictionaryThesaurusAllowance',
-                              'otherAllowances',
-                              'testCompleted']
-
-def bookings_list_for(user, incl_false_bool_fields = False, orderedFields = False):
-    """ returns list of dictionaries representing a booking
-    appointment the user can view.
-    each booking is either a list if orderedFields == True,
-    else is a dict
-    """
-    if (user.has_perm('exambookings.exam_center_view')):
-        bookings = Booking.objects.all()
-    elif (user.has_perm('exambookings.teacher_view')):
-        bookings = Booking.objects.filter(courseTeacher=user)
-    else:
-        bookings = []
-
-    bookings_list = []
-    for booking in bookings:
-        bookingObj = {'meta':'', 'data':''}
-        if orderedFields:
-            bookingObj['data'] = []
-        else:
-            bookingObj['data'] = {}
-
-        bookingObj['meta'] = {'editUrl':{'value':reverse('update_booking',
-                                                         kwargs={'pk':booking.pk}),
-                                         'verbose_name': "Edit Link",
-                                         'help_text': '',
-                                         'name': 'editUrl'},
-                              'setCompletedUrl': {'value':reverse('set_booking_completed',
-                                                                  kwargs={'pk':booking.pk}),
-                                                  'verbose_name': "Test Taken",
-                                                  'help_text': '',
-                                                  'name': 'setCompletedUrl'}
-                              }
-        for fieldname in BOOKING_fieldNames_ordered:
-            fieldData = booking.fieldDataOf(fieldname)
-            if incl_false_bool_fields or fieldData['value'] != False:
-                if not orderedFields:
-                    bookingObj['data'].update({fieldname: fieldData})
-                    # note bookingObj['data'] is an unordered dictionary!
-                else:
-                    bookingObj['data'].append(fieldData)
-        bookings_list.append(bookingObj)
-    return bookings_list
+import datetime
 
 @staff_only_view
 def create_booking_view(request):
@@ -101,7 +23,14 @@ def create_booking_view(request):
     also provides a form to create a new booking appointment
     """
     ctx = create_standard_csrf_context(request)
-    ctx['bookings_list'] = bookings_list_for(request.user, orderedFields = True)
+    ctx['bookings_list'] = Booking.getAllObjectsDataNormalizedForUser(request.user) #bookings_list_for(request.user, orderedFields = True)
+
+    now = datetime.datetime.now()
+    ctx['availableAppts'] = Booking.apptStats(4, showApptsAvailable = True)
+    ctx['refreshTime'] =  now.strftime("%b %d, %I:%M %p")
+
+    if request.user.has_perm('exambookings.exam_center_view'):
+        ctx['exam_center_view'] = True    
     
     form = CreateBookingForm()
     if request.method == 'POST':
@@ -119,7 +48,7 @@ def create_booking_view(request):
 @authorized_user_of_this_booking_only_view
 def update_booking_view(request, pk):
     ctx = create_standard_csrf_context(request)
-    ctx['bookings_list'] = bookings_list_for(request.user, orderedFields = True)
+    ctx['bookings_list'] = Booking.getAllObjectsDataNormalizedForUser(request.user) #bookings_list_for(request.user, orderedFields = True)
     
     if request.user.has_perm('exambookings.exam_center_view'):
         exam_center_view = True
@@ -151,8 +80,32 @@ def set_booking_completed_view(request, pk):
     if request.method == 'POST':
         appt = get_object_or_404(Booking, id__iexact=pk)
         appt.testCompleted = True
-        appt.save()
+        try:
+            appt.save()
+        except ValidationError as e:
+            pass # errors contained in e.message_dict
     return HttpResponseRedirect(reverse('create_booking'))
+
+
+@staff_only_view
+@authorized_user_of_this_booking_only_view
+def delete_booking_view(request, pk):
+    """ GET will prompt to delete.
+    POST will delete!
+    """
+    ctx = create_standard_csrf_context(request)
+    if request.user.has_perm('exambookings.exam_center_view'):
+        ctx['exam_center_view'] = True
+
+    appt = get_object_or_404(Booking, id__iexact=pk)
+
+    if request.method == 'POST':
+        appt.delete()
+        return HttpResponseRedirect(reverse('create_booking'))
+
+    ctx['bookingData'] = appt.getNormalizedDataOfFields(orderedFields=True, incl_false_bool_fields=True)
+    return render_to_response('exambookings/delete_booking_confirm.html', ctx)
+
 
 
 def sign_up_view(request):
