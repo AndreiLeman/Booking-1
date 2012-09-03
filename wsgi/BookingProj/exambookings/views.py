@@ -41,6 +41,7 @@ def create_booking_view(request):
             return HttpResponseRedirect(reverse('create_booking'))
     
     ctx['form'] = form
+    ctx['form_fields_groups'] = form_fields_groups_for_view(request.user, form)
     return render_to_response('exambookings/booking.html', ctx)
 
 
@@ -72,6 +73,7 @@ def update_booking_view(request, pk):
         form = UpdateBookingForm(instance=appt)
     
     ctx['form'] = form
+    ctx['form_fields_groups'] = form_fields_groups_for_view(request.user, form)
     return render_to_response('exambookings/update_booking.html', ctx)
 
 @staff_only_view

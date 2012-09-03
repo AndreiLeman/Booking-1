@@ -1,0 +1,32 @@
+{% for booking in bookings_list %}
+<div class="AppointmentBox">
+  <dl class="DataFields">
+    {% if exam_center_view %}
+    {% for field in booking.data %}
+    <dt>{{ field.verbose_name }}</dt>
+    <dd>{{ field.value }}&nbsp;</dd>
+    {% endfor %}
+    {% else %}
+    {% for field in booking.data %}
+    {% ifnotequal field.name 'courseTeacher' %}
+    <dt>{{ field.verbose_name }}</dt>
+    <dd>{{ field.value }}&nbsp;</dd>
+    {% endifnotequal %}
+    {% endfor %}		  
+    {% endif %}
+  </dl>
+  <div class="OneClickButtons">
+    <form class="OneClickActions" method="get" action="{{ booking.meta.editUrl.value }}">
+      <input class="Button" type="submit" value="Edit" />
+    </form>
+    <form class="OneClickActions" method="post" action="{{ booking.meta.setCompletedUrl.value }}">
+      {% csrf_token %}
+      <input class="Button" type="submit" value="Test Completed" />
+    </form>
+    <form class="OneClickActions" method="get" action="{{ booking.meta.deleteUrl.value }}">
+      <input class="Button" type="submit" value="Delete" />
+    </form>
+  </div>
+  <div style="clear:both"></div>
+</div>
+{% endfor %}

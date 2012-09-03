@@ -1,0 +1,26 @@
+{% load widget_tweaks %}
+{% csrf_token %}
+<div class="NonFieldErrors">
+  {{ form.non_field_errors }}
+</div>
+{% include "exambookings/form_hidden_fields.html" %}
+
+<h4>Student</h4>
+{% for field in form_fields_groups.student %}
+{% include "exambookings/appt_form_fields_display.html" %}
+{% endfor %}
+
+<h4>Test</h4>
+{% for field in form_fields_groups.test %}
+{% include "exambookings/appt_form_fields_display.html" %}
+{% endfor %}
+
+<h4>Accommodations</h4>
+{% for field in form_fields_groups.accommodations %}
+{% include "exambookings/appt_form_fields_display.html" %}
+{% endfor %}
+
+<h4>Allowances</h4>
+{% for field in form_fields_groups.allowances %}
+{% include "exambookings/appt_form_fields_display.html" %}		  
+{% endfor %}
