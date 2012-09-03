@@ -6,7 +6,7 @@ from django.http import HttpResponseRedirect
 #from django.template import RequestContext
 
 from django.contrib.auth.models import User
-from exambookings.models import Booking
+from exambookings.models import Booking, Period
 from exambookings.forms import CreateBookingForm, ExamBookingSignupForm, ExamBookingAuthForm, UpdateBookingForm
 
 import userena.views
@@ -15,6 +15,8 @@ import userena.settings
 from django.core.urlresolvers import reverse
 from exambookings.viewsHelpers import *
 
+import datetime
+
 @staff_only_view
 def create_booking_view(request):
     """ shows bookings available to be seen by logged-in user
@@ -22,6 +24,10 @@ def create_booking_view(request):
     """
     ctx = create_standard_csrf_context(request)
     ctx['bookings_list'] = Booking.getAllObjectsDataNormalizedForUser(request.user) #bookings_list_for(request.user, orderedFields = True)
+
+    now = datetime.datetime.now()
+    ctx['availableAppts'] = Booking.apptStats(4, showApptsAvailable = True)
+    ctx['refreshTime'] =  now.strftime("%b %d, %I:%M %p")
 
     if request.user.has_perm('exambookings.exam_center_view'):
         ctx['exam_center_view'] = True    

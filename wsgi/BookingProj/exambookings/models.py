@@ -1,10 +1,12 @@
 from django.db import models, transaction
 from django.core.urlresolvers import reverse
 from django.core.exceptions import ValidationError
-#import datetime
 
 #from profiles.models import BaseProfile
 from django.contrib.auth.models import User
+
+import datetime
+ONE_DAY = datetime.timedelta(days=1)
 
 # Create your models here.
 # class StudentProfile(models.Model):
@@ -313,6 +315,30 @@ class Booking(models.Model):
         """ aPeriod is Period.ONE, etc.
         """
         return cls.objects.filter(testDate=aDatetime, testPeriod=aPeriod).count()
+
+    @classmethod
+    def apptStats(cls, days = 1, showApptsAvailable = False, verbosePeriodName = True):
+        """ provide counts of appts in each period in next days
+        """
+        day = datetime.date.today()
+        
+        allStats = []
+        for x in range(days):
+            dayStats = []
+            for k,v in Period.CHOICES:
+                if showApptsAvailable:
+                    apptCnt = EXAM_CENTER_RM_100_CAPACITY - cls.countAppts(day, k)
+                else:
+                    apptCnt = cls.countAppts(day, k)
+                if verbosePeriodName:
+                    perName = Period.TIME_VERBOSE_NAME_MAP[k]
+                else:
+                    perName = k
+                dayStats.append({'periodName':perName, 'apptCount': apptCnt})
+            allStats.append({'date': day, 'stats': dayStats})
+            day += ONE_DAY
+            
+        return allStats
     
 
 

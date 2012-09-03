@@ -51,6 +51,8 @@
 
         <div class="row body_row">
             <div class="sixcol left_col">
+
+	      
                 <p>&nbsp;</p>
 		{% for booking in bookings_list %}
 		<div style="border: solid 1pt black; margin-bottom: 5px;">
@@ -140,9 +142,35 @@
                 </p>
                 </div>
               </form>
-            </div>
-        </div>      
-
+	    
+	      <div class="apptStatsBox">
+		<h2>Spaces Available</h2>
+		<p>As of {{ refreshTime }}.</p>
+		<p>This does not show periods tumbling!!</p>
+		<ol class="apptStats">
+		  <ol class="day rowHeaders">
+		    <li class="period colHeader"></li>
+		    {% for period in availableAppts.0.stats %}
+		    <li class="period">
+		      {{ period.periodName }}
+		    </li>
+		    {% endfor %}
+		  </ol>
+		  
+		  {% for day in availableAppts %}
+		  <ol class="day rowHeader">
+		    <li class="period colHeader">{{ day.date.month }}/{{ day.date.day }}</li>
+		    {% for period in availableAppts.0.stats %}
+		    <li class="period">
+		      {{ period.apptCount }}
+		    </li>
+		    {% endfor %}
+		  </ol>
+		  {% endfor %}
+		</ol>
+	      </div>
+            </div>      
+        </div>
         <div class="row footer_bar">
 	  {% include "exambookings/footer_bar.html" %}
         </div>
