@@ -55,10 +55,19 @@
 		{% for booking in bookings_list %}
 		<div style="border: solid 1pt black; margin-bottom: 5px;">
 		<dl>
+		  {% if exam_center_view %}		  
 		  {% for field in booking.data %}
 		  <dt style="width: 40%; float: left; text-align: left;">{{ field.verbose_name }}</dt>
 		  <dd style="width: 40%; float: left;"> {{ field.value }}</dd>
 		  {% endfor %}
+		  {% else %}
+		  {% for field in booking.data %}
+		  {% ifnotequal field.name 'courseTeacher' %}
+		  <dt style="width: 40%; float: left; text-align: left;">{{ field.verbose_name }}</dt>
+		  <dd style="width: 40%; float: left;"> {{ field.value }}</dd>
+		  {% endifnotequal %}
+		  {% endfor %}		  
+		  {% endif %}
 		</dl>
 		<form id="" name="" method="get" action="{{ booking.meta.editUrl.value }}">
 		  <input type="submit" value="Edit" />
