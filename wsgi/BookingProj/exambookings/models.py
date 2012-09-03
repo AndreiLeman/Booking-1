@@ -195,6 +195,22 @@ class Booking(models.Model):
                             'testDate',
                             'testPeriod',),)
 
+    def __repr__(self):
+        s = (self.studentFirstName + " " + self.studentLastName)
+        s += (" in " + self.testCourseName + ": ")
+        if self.testCompleted:
+            done = " is completed on "
+        else:
+            done = " is NOT completed on "
+        s += ("Test " + self.testName + done)
+        s += (str(self.testDate) + " " + Period.TIME_VERBOSE_NAME_MAP[self.testPeriod])
+
+        return s
+#        return super(Booking, self).__repr__()
+
+    def __str__(self):
+        return self.__repr__()
+        
     def clean(self):
         if Booking.countAppts(self.testDate, self.testPeriod) >= EXAM_CENTER_RM_100_CAPACITY:
             raise ValidationError(Period.TIME_VERBOSE_NAME_MAP[self.testPeriod] + ' on ' + str(self.testDate) + ' is full.')
