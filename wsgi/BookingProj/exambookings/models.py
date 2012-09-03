@@ -262,14 +262,19 @@ class Booking(models.Model):
             bookingObj = {'meta':'', 'data':''}
             bookingObj['meta'] = {'editUrl':{'value':reverse('update_booking',
                                                              kwargs={'pk':booking.pk}),
-                                             'verbose_name': "Edit Link",
+                                             'verbose_name': "Edit Booking",
                                              'help_text': '',
                                              'name': 'editUrl'},
                                   'setCompletedUrl': {'value':reverse('set_booking_completed',
                                                                       kwargs={'pk':booking.pk}),
                                                       'verbose_name': "Test Taken",
                                                       'help_text': '',
-                                                      'name': 'setCompletedUrl'}
+                                                      'name': 'setCompletedUrl'},
+                                  'deleteUrl': {'value':reverse('delete_booking',
+                                                                kwargs={'pk':booking.pk}),
+                                                'verbose_name': "Delete Booking",
+                                                'help_text': '',
+                                                'name': 'deleteUrl'}
                                   }
             bookingObj['data'] = booking.getNormalizedDataOfFields(orderedFields=orderedFields, incl_false_bool_fields=incl_false_bool_fields)
             bookings_list.append(bookingObj)

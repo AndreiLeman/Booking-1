@@ -75,7 +75,10 @@
 		<form id="" name="" method="post" action="{{ booking.meta.setCompletedUrl.value }}">
 		  {% csrf_token %}
 		  <input type="submit" name="test_completed" id="id_test_completed" value="Test Completed" />
-		</form>		
+		</form>
+		<form id="" name="" method="get" action="{{ booking.meta.deleteUrl.value }}">
+		  <input type="submit" name="" id="" value="Delete" />
+		</form>
 		<div style="clear:both"></div>
 		</div>
 		{% endfor %}
