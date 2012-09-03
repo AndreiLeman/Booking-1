@@ -491,7 +491,7 @@ div.apptStatsBox .apptStats {
     overflow: auto;
     padding-bottom: 1px;
     position: relative;
-    font-size: 12pt;
+    font-size: small;
 }
 
 div.apptStatsBox .apptStats {
@@ -516,16 +516,111 @@ div.apptStatsBox p {
 }
 
 .apptStats .colHeader {
-    text-decoration: underline;
+   font-weight: bolder;
 }
 
 .apptStats .period {
-    height: 2ex;
+   height: 2ex;
+   border-bottom: gray 1pt solid;
 }
 
 .apptStats .rowHeaders {
     width: 9em;
     float: left;
     text-align: right;
-    margin-right: 0.5em;
+
+}
+
+
+.AppointmentBox {
+   position:relative;
+   overflow: auto;
+   text-align: left;
+}
+
+div.AppointmentBox .DataFields {
+   position: relative;
+   overflow: auto;
+   width: 60%;
+   float: left;
+   margin: none;
+   padding: none;
+   padding-bottom: 5px;
+   margin-bottom: 1ex;
+}
+.AppointmentBox .DataFields dt {
+   width: 60%;
+   float: left;
+   text-align: left;
+   margin-bottom: 0.5ex;
+   clear: both;
+}
+
+.AppointmentBox .DataFields dd {
+   width: 40%;
+   float: left;
+   margin-bottom: 0.5ex;   
+}
+
+
+.AppointmentBox .OneClickButtons {
+   position:relative;
+   overflow: auto;
+   width: 35%;
+   margin-right: 0.9em;
+}
+
+.AppointmentBox .OneClickActions {
+   margin: 1em;
+}
+
+.AppointmentBox .OneClickActions .Button {
+   width: auto;
+   font-size: 0.9em;
+}
+
+
+
+.ApptEditForm h3 {
+   font-weight: bold;
+   font-size: large;
+   text-align: center;
+   margin-top: 0.2em;
+   margin-bottom: 0.2em;   
+}
+.ApptEditForm h4 {
+   font-weight: bold;
+   font-size: bigger;
+   text-align: center;
+   margin-top: 1em;
+}
+.ApptEditForm .NonFieldErrors,
+.ApptEditForm .errorlist {
+   color: red;
+   font-weight: bold;
+   clear:both;
+   padding-bottom: 3px;
+   text-align: right;
+}
+.ApptEditForm .Field {
+   width: 100%;
+   position: relative;
+   overflow: auto;
+}
+.ApptEditForm .Field .FieldLabel {
+   display: block;
+   width: 48%;
+   float: left;
+   text-align: right;
+   padding-right: 1%;
+}
+.ApptEditForm .Field .FieldInput {
+   display: block;   
+   width: 48%;
+   float: left;
+   font-size: 0.9em;
+}
+.ApptEditForm .Field select {
+   width: auto;
+   font-size: 0.9em;
 }

@@ -5,20 +5,20 @@ from django.contrib.auth.models import User, Permission
 import userena.forms, re
 from exambookings import settings
 from profiles.models import prettyNameOfUser
-
+import datetime
 
 class UserModelChoiceField(forms.ModelChoiceField):
     def label_from_instance(self, usr):
          return prettyNameOfUser(usr)
     
 class UpdateBookingForm(forms.ModelForm):
-    testDate = forms.DateField(widget=SelectDateWidget(), label="Test on Date")
     courseTeacher = UserModelChoiceField(queryset=User.objects.all().order_by('email'), label="Course Teacher")
+    testDate = forms.DateField(widget=SelectDateWidget(years=[2012]), label="Test on Date")
     class Meta:
         model = Booking
 
 class CreateBookingForm(forms.ModelForm):
-    testDate = forms.DateField(widget=SelectDateWidget(), label="Test on Date")
+    testDate = forms.DateField(widget=SelectDateWidget(years=[2012]), label="Test on Date")
     class Meta:
         model = Booking
         exclude = ('courseTeacher',)

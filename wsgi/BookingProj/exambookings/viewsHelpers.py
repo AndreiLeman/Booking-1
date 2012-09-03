@@ -51,3 +51,46 @@ def create_standard_csrf_context(request):
     ctx = create_standard_context(request)
     ctx.update(csrf(request))
     return ctx
+
+def form_fields_groups_for_view(user, form):
+    fieldsDict = {}
+    for field in form:
+        fieldsDict.update({field.html_name: field})
+
+    if not user.has_perm('exambookings.exam_center_view'):
+        if fieldsDict.get("courseTeacher"):
+            del fieldsDict["courseTeacher"]
+
+    if not fieldsDict['testCompleted'].value():
+        del fieldsDict['testCompleted']
+    
+    fields_grp = {
+        'student': [fieldsDict.get('studentFirstName'),
+                    fieldsDict.get('studentLastName'),
+                    fieldsDict.get('studentGrade')],
+        'test': [fieldsDict.get('testCourseName'),
+                 fieldsDict.get('testName'),
+                 fieldsDict.get('testDate'),
+                 fieldsDict.get('testDuration'),
+                 fieldsDict.get('testPeriod'),
+                 fieldsDict.get('examCenter'),
+                 fieldsDict.get('courseTeacher'),
+                 fieldsDict.get('testCompleted')],
+        'accommodations': [fieldsDict.get('extendedTimeAccomodation'),
+                           fieldsDict.get('computerAccomodation'),
+                           fieldsDict.get('scribeAccomodation'),
+                           fieldsDict.get('enlargementsAccomodation'),
+                           fieldsDict.get('readerAccomodation'),
+                           fieldsDict.get('isolationQuietAccomodation')],
+        'allowances': [fieldsDict.get('ellDictionaryAllowance'),
+                       fieldsDict.get('calculatorManipulativesAllowance'),
+                       fieldsDict.get('openBookNotesAllowance'),
+                       fieldsDict.get('computerInternetAllowance'),
+                       fieldsDict.get('englishDictionaryThesaurusAllowance'),
+                       fieldsDict.get('otherAllowances')]
+        }
+
+    for (k,v) in fields_grp.items():
+        fields_grp.update({k: filter(lambda x: x!= None, v)})
+    
+    return fields_grp

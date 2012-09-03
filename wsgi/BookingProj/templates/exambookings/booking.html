@@ -51,97 +51,20 @@
 
         <div class="row body_row">
             <div class="sixcol left_col">
-
-	      
-                <p>&nbsp;</p>
-		{% for booking in bookings_list %}
-		<div style="border: solid 1pt black; margin-bottom: 5px;">
-		<dl>
-		  {% if exam_center_view %}		  
-		  {% for field in booking.data %}
-		  <dt style="width: 40%; float: left; text-align: left;">{{ field.verbose_name }}</dt>
-		  <dd style="width: 40%; float: left;"> {{ field.value }}</dd>
-		  {% endfor %}
-		  {% else %}
-		  {% for field in booking.data %}
-		  {% ifnotequal field.name 'courseTeacher' %}
-		  <dt style="width: 40%; float: left; text-align: left;">{{ field.verbose_name }}</dt>
-		  <dd style="width: 40%; float: left;"> {{ field.value }}</dd>
-		  {% endifnotequal %}
-		  {% endfor %}		  
-		  {% endif %}
-		</dl>
-		<form id="" name="" method="get" action="{{ booking.meta.editUrl.value }}">
-		  <input type="submit" value="Edit" />
-		</form>
-		<form id="" name="" method="post" action="{{ booking.meta.setCompletedUrl.value }}">
-		  {% csrf_token %}
-		  <input type="submit" name="test_completed" id="id_test_completed" value="Test Completed" />
-		</form>
-		<form id="" name="" method="get" action="{{ booking.meta.deleteUrl.value }}">
-		  <input type="submit" name="" id="" value="Delete" />
-		</form>
-		<div style="clear:both"></div>
-		</div>
-		{% endfor %}
-                <p>&nbsp;</p>
+              <p>&nbsp;</p>
+	      {% include "exambookings/appts_display.html" %}
+              <p>&nbsp;</p>
             </div>
 
             <div class="sixcol last right_col">
-                <div class="update">
-	                <p>Create Appointment</p>
-	            </div>	      
-              <form id="form1" name="form1" method="post" action="">
-		{% csrf_token %}
-		{{ form.non_field_errors }}
-		{% include "exambookings/form_hidden_fields.html" %}
-
-		{% for field in form %}
-		{% if field.html_name in "studentFirstName studentLastName studentGrade testCourseName testName testDate testDuration testPeriod examCenter" %}
-                <p>
-                  <label class="signInFieldLabel"
-                         for="id_{{ field.html_name }}">{{ field.label }}</label>
-		  {{ field|add_class:'signInFieldInput' }}
-		  {{ field.errors }}
-                </p>
-		{% endif %}
-		{% endfor %}
-
-		<p class="signInFieldLabel">Accommodations:</p>
-
-		{% for field in form %}
-		{% if field.html_name in "extendedTimeAccomodation computerAccomodation scribeAccomodation enlargementsAccomodation readerAccomodation isolationQuietAccomodation" %}
-		<p style="clear:both">
-                  <label class="signInFieldLabel"
-                         for="id_{{ field.html_name }}">{{ field.label }}</label>
-		  {{ field|add_class:'signInFieldInput' }}
-		  {{ field.errors }}
-                </p>
-		{% endif %}
-		{% endfor %}
-
-		<p class="signInFieldLabel">Allowances:</p>
-
-		{% for field in form %}
-		{% if field.html_name in "ellDictionaryAllowance calculatorManipulativesAllowance openBookNotesAllowance computerInternetAllowance englishDictionaryThesaurusAllowance otherAllowances" %}
-		<p style="clear:both">
-                  <label class="signInFieldLabel"
-                         for="id_{{ field.html_name }}">{{ field.label }}</label>
-		  {{ field|add_class:'signInFieldInput' }}
-		  {{ field.errors }}
-                </p>
-		{% endif %}
-		{% endfor %}		
-
-                <p>&nbsp;</p>
-                <p>
-                  <div class="submit1">
-                    <label for="submit"></label>
-                    <input type="submit" name="Submit" id="Submit" value="Submit" />
-
-                </p>
-                </div>
-              </form>
+	      <form class="ApptEditForm" method="post" action="">
+		<h3>Create Appointment</h3>		
+		{% include "exambookings/appt_edit_form_body.html" %}
+		<div class="submit1">
+		  <label for="submit_id">
+		    <input type="submit" id="submit_id" value="Create Appointment" /></label>
+		</div>
+	      </form>
 	    
 	      <div class="apptStatsBox">
 		<h2>Spaces Available</h2>
