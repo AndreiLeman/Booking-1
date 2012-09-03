@@ -7,11 +7,12 @@ from exambookings import settings
 
 
 class UpdateBookingForm(forms.ModelForm):
+    testDate = forms.DateField(widget=SelectDateWidget(), label="Test on Date")
     class Meta:
         model = Booking
 
 class CreateBookingForm(forms.ModelForm):
-    testDate = forms.DateField(widget=SelectDateWidget())
+    testDate = forms.DateField(widget=SelectDateWidget(), label="Test on Date")
     class Meta:
         model = Booking
         exclude = ('courseTeacher',)
