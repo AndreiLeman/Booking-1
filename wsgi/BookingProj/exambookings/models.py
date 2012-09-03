@@ -78,6 +78,24 @@ from django.contrib.auth.models import User
 #             ("exam_center_view", "Can view all bookings"),
 #             )
 
+_PERIOD_TUTORIAL = 830
+_PERIOD_ONE = 900
+_PERIOD_TWO = 1030
+_PERIOD_LUNCH = 1200
+_PERIOD_THREE = 1230
+_PERIOD_FOUR = 1400
+_PERIOD_AFTERSCHOOL = 1530
+_TEST_PERIOD_CHOICES = (
+    (_PERIOD_TUTORIAL, 'Tutorial Time'),
+    (_PERIOD_ONE, 'Period 1'),
+    (_PERIOD_TWO, 'Period 2'),
+    (_PERIOD_LUNCH, 'Lunch Time'),
+    (_PERIOD_THREE, 'Period 3'),
+    (_PERIOD_FOUR, 'Period 4'),
+    (_PERIOD_AFTERSCHOOL, 'After School'),
+    )
+PERIOD_TIME_NAME_MAP = dict(_TEST_PERIOD_CHOICES)
+
 class Booking(models.Model):
     GRADE_TEN = 10
     GRADE_ELEVEN = 11
@@ -93,22 +111,14 @@ class Booking(models.Model):
         (EXAM_CENTER_RM_100, "Main Exam Center - Rm 100"),
         )
     
-    PERIOD_TUTORIAL = 830
-    PERIOD_ONE = 900
-    PERIOD_TWO = 1030
-    PERIOD_LUNCH = 1200
-    PERIOD_THREE = 1230
-    PERIOD_FOUR = 1400
-    PERIOD_AFTERSCHOOL = 1530
-    TEST_PERIOD_CHOICES = (
-        (PERIOD_TUTORIAL, 'Tutorial Time'),
-        (PERIOD_ONE, 'Period 1'),
-        (PERIOD_TWO, 'Period 2'),
-        (PERIOD_LUNCH, 'Lunch Time'),
-        (PERIOD_THREE, 'Period 3'),
-        (PERIOD_FOUR, 'Period 4'),
-        (PERIOD_AFTERSCHOOL, 'After School'),
-        )
+    PERIOD_TUTORIAL = _PERIOD_TUTORIAL
+    PERIOD_ONE = _PERIOD_ONE
+    PERIOD_TWO = _PERIOD_TWO
+    PERIOD_LUNCH = _PERIOD_LUNCH
+    PERIOD_THREE = _PERIOD_THREE
+    PERIOD_FOUR = _PERIOD_FOUR
+    PERIOD_AFTERSCHOOL = _PERIOD_AFTERSCHOOL
+    TEST_PERIOD_CHOICES = _TEST_PERIOD_CHOICES
 
     # studentProfile = models.ForeignKey(StudentProfile)
     studentFirstName = models.CharField(max_length=30,
