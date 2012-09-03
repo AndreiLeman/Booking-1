@@ -190,6 +190,25 @@ class Booking(models.Model):
             data['value'] = self.courseTeacher # avoids showing foreign key id
         return data
 
+    def getNormalizedDataOfFields(self, fieldNamesList, orderedFields=False, incl_false_bool_fields=False):
+        """ returns fields indicated in fieldNamesList using fieldDataOf()
+        in either an ordered list or dict depending on orderedFields
+        """
+        if orderedFields:
+            data = []
+        else:
+            data = {}
+            
+        for fieldname in fieldNamesList:
+            fieldData = self.fieldDataOf(fieldname)
+            if incl_false_bool_fields or fieldData['value'] != False:
+                if orderedFields:
+                    data.append(fieldData)
+                else:
+                    data.update({fieldname: fieldData})
+        return data
+                    
+
 #Relations
 # class StudentBelongsToCourse(models.Model):
 #     student = models.ForeignKey(StudentProfile)

@@ -58,30 +58,20 @@ def bookings_list_for(user, incl_false_bool_fields = False, orderedFields = Fals
     each booking is either a list if orderedFields == True,
     else is a dict
     """
-    order_by_args = ('testDate', 'testPeriod', 'lower_studentFirstName', 'lower_studentLastName')
     if (user.has_perm('exambookings.exam_center_view')):
-        if sortAppts:
-            bookings = Booking.objects.all().extra(select={'lower_studentFirstName': 'lower(studentFirstName)',
-                                                           'lower_studentLastName': 'lower(studentLastName)'}).order_by(*order_by_args)
-        else:
-            bookings = Booking.objects.all()
+        bookings = Booking.objects.all()
     elif (user.has_perm('exambookings.teacher_view')):
-        if sortAppts:
-            bookings = Booking.objects.filter(courseTeacher=user).extra(select={'lower_studentFirstName': 'lower(studentFirstName)',
-                                                                                'lower_studentLastName': 'lower(studentLastName)'}).order_by(*order_by_args)
-        else:
-            bookings = Booking.objects.filter(courseTeacher=user)
+        bookings = Booking.objects.filter(courseTeacher=user)
     else:
         bookings = []
 
+    if sortAppts and bookings != []:
+        bookings = bookings.extra(select={'lower_studentFirstName': 'lower(studentFirstName)',
+                                          'lower_studentLastName': 'lower(studentLastName)'}).order_by('testDate', 'testPeriod',
+                                                                                                       'lower_studentFirstName', 'lower_studentLastName')
     bookings_list = []
     for booking in bookings:
         bookingObj = {'meta':'', 'data':''}
-        if orderedFields:
-            bookingObj['data'] = []
-        else:
-            bookingObj['data'] = {}
-
         bookingObj['meta'] = {'editUrl':{'value':reverse('update_booking',
                                                          kwargs={'pk':booking.pk}),
                                          'verbose_name': "Edit Link",
@@ -93,14 +83,8 @@ def bookings_list_for(user, incl_false_bool_fields = False, orderedFields = Fals
                                                   'help_text': '',
                                                   'name': 'setCompletedUrl'}
                               }
-        for fieldname in BOOKING_fieldNames_ordered:
-            fieldData = booking.fieldDataOf(fieldname)
-            if incl_false_bool_fields or fieldData['value'] != False:
-                if not orderedFields:
-                    bookingObj['data'].update({fieldname: fieldData})
-                    # note bookingObj['data'] is an unordered dictionary!
-                else:
-                    bookingObj['data'].append(fieldData)
+        bookingObj['data'] = booking.getNormalizedDataOfFields(BOOKING_fieldNames_ordered, orderedFields=orderedFields,
+                                                               incl_false_bool_fields=incl_false_bool_fields)
         bookings_list.append(bookingObj)
     return bookings_list
 
