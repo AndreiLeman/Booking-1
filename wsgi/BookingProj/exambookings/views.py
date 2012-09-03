@@ -102,6 +102,9 @@ def create_booking_view(request):
     """
     ctx = create_standard_csrf_context(request)
     ctx['bookings_list'] = bookings_list_for(request.user, orderedFields = True)
+
+    if request.user.has_perm('exambookings.exam_center_view'):
+        ctx['exam_center_view'] = True    
     
     form = CreateBookingForm()
     if request.method == 'POST':
