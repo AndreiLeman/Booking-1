@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.urlresolvers import reverse
 #import datetime
 
 #from profiles.models import BaseProfile
@@ -178,6 +179,32 @@ class Booking(models.Model):
                             'testDate',
                             'testPeriod',),)
 
+    @classmethod
+    def getFieldnamesStdOrder(cls):
+        return ["studentFirstName",
+                "studentLastName",
+                'studentGrade',
+                "testCourseName",
+                "courseTeacher",
+                'testName',
+                'testDuration',
+                'testDate',
+                "testPeriod",
+                "examCenter",
+                'extendedTimeAccomodation',
+                'computerAccomodation',
+                'scribeAccomodation',
+                'enlargementsAccomodation',
+                'readerAccomodation',
+                'isolationQuietAccomodation',
+                'ellDictionaryAllowance',
+                'calculatorManipulativesAllowance',
+                'openBookNotesAllowance',
+                'computerInternetAllowance',
+                'englishDictionaryThesaurusAllowance',
+                'otherAllowances',
+                'testCompleted']
+
     def fieldDataOf(self, fieldNameStr):
         f = self._meta.get_field(fieldNameStr)
         attname = f.get_attname()
@@ -190,10 +217,13 @@ class Booking(models.Model):
             data['value'] = self.courseTeacher # avoids showing foreign key id
         return data
 
-    def getNormalizedDataOfFields(self, fieldNamesList, orderedFields=False, incl_false_bool_fields=False):
+    def getNormalizedDataOfFields(self, fieldNamesList=None, orderedFields=False, incl_false_bool_fields=False):
         """ returns fields indicated in fieldNamesList using fieldDataOf()
         in either an ordered list or dict depending on orderedFields
         """
+        if fieldNamesList == None:
+            fieldNamesList = Booking.getFieldnamesStdOrder()
+            
         if orderedFields:
             data = []
         else:
@@ -207,7 +237,47 @@ class Booking(models.Model):
                 else:
                     data.update({fieldname: fieldData})
         return data
-                    
+
+    @classmethod
+    def getAllObjectsDataNormalizedForUser(cls, user, incl_false_bool_fields = False, orderedFields = True, sortAppts = True):
+        """ returns list of dictionaries representing a booking
+        appointment the user can view.
+        each booking is either a list if orderedFields == True,
+        else is a dict
+        """
+        if (user.has_perm('exambookings.exam_center_view')):
+            bookings = cls.objects.all()
+        elif (user.has_perm('exambookings.teacher_view')):
+            bookings = cls.objects.filter(courseTeacher=user)
+        else:
+            bookings = []
+
+            if sortAppts and bookings != []:
+                bookings = bookings.extra(select={'lower_studentFirstName': 'lower(studentFirstName)',
+                                                  'lower_studentLastName': 'lower(studentLastName)'}).order_by('testDate', 'testPeriod',
+                                                                                                               'lower_studentFirstName',
+                                                                                                               'lower_studentLastName')
+        bookings_list = []
+        for booking in bookings:
+            bookingObj = {'meta':'', 'data':''}
+            bookingObj['meta'] = {'editUrl':{'value':reverse('update_booking',
+                                                             kwargs={'pk':booking.pk}),
+                                             'verbose_name': "Edit Link",
+                                             'help_text': '',
+                                             'name': 'editUrl'},
+                                  'setCompletedUrl': {'value':reverse('set_booking_completed',
+                                                                      kwargs={'pk':booking.pk}),
+                                                      'verbose_name': "Test Taken",
+                                                      'help_text': '',
+                                                      'name': 'setCompletedUrl'}
+                                  }
+            bookingObj['data'] = booking.getNormalizedDataOfFields(orderedFields=orderedFields, incl_false_bool_fields=incl_false_bool_fields)
+            bookings_list.append(bookingObj)
+        return bookings_list
+
+
+    
+
 
 #Relations
 # class StudentBelongsToCourse(models.Model):

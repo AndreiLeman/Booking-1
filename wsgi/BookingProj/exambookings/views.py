@@ -13,68 +13,7 @@ import userena.views
 import userena.settings
 
 from django.core.urlresolvers import reverse
-from exambookings.viewsHelpers import reverse_lazy, staff_only_view, authorized_user_of_this_booking_only_view
-
-
-BOOKING_fieldNames_ordered = ["studentFirstName",
-                              "studentLastName",
-                              'studentGrade',
-                              "testCourseName",
-                              "courseTeacher",
-                              'testName',
-                              'testDuration',
-                              'testDate',
-                              "testPeriod",
-                              "examCenter",
-                              'extendedTimeAccomodation',
-                              'computerAccomodation',
-                              'scribeAccomodation',
-                              'enlargementsAccomodation',
-                              'readerAccomodation',
-                              'isolationQuietAccomodation',
-                              'ellDictionaryAllowance',
-                              'calculatorManipulativesAllowance',
-                              'openBookNotesAllowance',
-                              'computerInternetAllowance',
-                              'englishDictionaryThesaurusAllowance',
-                              'otherAllowances',
-                              'testCompleted']
-
-def bookings_list_for(user, incl_false_bool_fields = False, orderedFields = False, sortAppts = True):
-    """ returns list of dictionaries representing a booking
-    appointment the user can view.
-    each booking is either a list if orderedFields == True,
-    else is a dict
-    """
-    if (user.has_perm('exambookings.exam_center_view')):
-        bookings = Booking.objects.all()
-    elif (user.has_perm('exambookings.teacher_view')):
-        bookings = Booking.objects.filter(courseTeacher=user)
-    else:
-        bookings = []
-
-    if sortAppts and bookings != []:
-        bookings = bookings.extra(select={'lower_studentFirstName': 'lower(studentFirstName)',
-                                          'lower_studentLastName': 'lower(studentLastName)'}).order_by('testDate', 'testPeriod',
-                                                                                                       'lower_studentFirstName', 'lower_studentLastName')
-    bookings_list = []
-    for booking in bookings:
-        bookingObj = {'meta':'', 'data':''}
-        bookingObj['meta'] = {'editUrl':{'value':reverse('update_booking',
-                                                         kwargs={'pk':booking.pk}),
-                                         'verbose_name': "Edit Link",
-                                         'help_text': '',
-                                         'name': 'editUrl'},
-                              'setCompletedUrl': {'value':reverse('set_booking_completed',
-                                                                  kwargs={'pk':booking.pk}),
-                                                  'verbose_name': "Test Taken",
-                                                  'help_text': '',
-                                                  'name': 'setCompletedUrl'}
-                              }
-        bookingObj['data'] = booking.getNormalizedDataOfFields(BOOKING_fieldNames_ordered, orderedFields=orderedFields,
-                                                               incl_false_bool_fields=incl_false_bool_fields)
-        bookings_list.append(bookingObj)
-    return bookings_list
+from exambookings.viewsHelpers import *
 
 @staff_only_view
 def create_booking_view(request):
@@ -82,7 +21,7 @@ def create_booking_view(request):
     also provides a form to create a new booking appointment
     """
     ctx = create_standard_csrf_context(request)
-    ctx['bookings_list'] = bookings_list_for(request.user, orderedFields = True)
+    ctx['bookings_list'] = Booking.getAllObjectsDataNormalizedForUser(request.user) #bookings_list_for(request.user, orderedFields = True)
 
     if request.user.has_perm('exambookings.exam_center_view'):
         ctx['exam_center_view'] = True    
@@ -103,7 +42,7 @@ def create_booking_view(request):
 @authorized_user_of_this_booking_only_view
 def update_booking_view(request, pk):
     ctx = create_standard_csrf_context(request)
-    ctx['bookings_list'] = bookings_list_for(request.user, orderedFields = True)
+    ctx['bookings_list'] = Booking.getAllObjectsDataNormalizedForUser(request.user) #bookings_list_for(request.user, orderedFields = True)
     
     if request.user.has_perm('exambookings.exam_center_view'):
         exam_center_view = True
@@ -155,7 +94,7 @@ def delete_booking_view(request, pk):
         appt.delete()
         return HttpResponseRedirect(reverse('create_booking'))
 
-    ctx['bookingData'] = appt.getNormalizedDataOfFields(BOOKING_fieldNames_ordered, orderedFields=True, incl_false_bool_fields=True)
+    ctx['bookingData'] = appt.getNormalizedDataOfFields(orderedFields=True, incl_false_bool_fields=True)
     return render_to_response('exambookings/delete_booking_confirm.html', ctx)
 
 
