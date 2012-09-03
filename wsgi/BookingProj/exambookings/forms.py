@@ -13,7 +13,7 @@ class UserModelChoiceField(forms.ModelChoiceField):
     
 class UpdateBookingForm(forms.ModelForm):
     testDate = forms.DateField(widget=SelectDateWidget(), label="Test on Date")
-    courseTeacher = UserModelChoiceField(queryset=User.objects.all(), label="Course Teacher")
+    courseTeacher = UserModelChoiceField(queryset=User.objects.all().order_by('email'), label="Course Teacher")
     class Meta:
         model = Booking
 
