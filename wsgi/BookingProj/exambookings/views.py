@@ -151,6 +151,27 @@ def set_booking_completed_view(request, pk):
     return HttpResponseRedirect(reverse('create_booking'))
 
 
+@staff_only_view
+@authorized_user_of_this_booking_only_view
+def delete_booking_view(request, pk):
+    """ GET will prompt to delete.
+    POST will delete!
+    """
+    ctx = create_standard_csrf_context(request)
+    if request.user.has_perm('exambookings.exam_center_view'):
+        ctx['exam_center_view'] = True
+
+    appt = get_object_or_404(Booking, id__iexact=pk)
+
+    if request.method == 'POST':
+        appt.delete()
+        return HttpResponseRedirect(reverse('create_booking'))
+
+    ctx['bookingData'] = appt.getNormalizedDataOfFields(BOOKING_fieldNames_ordered, orderedFields=True, incl_false_bool_fields=True)
+    return render_to_response('exambookings/delete_booking_confirm.html', ctx)
+
+
+
 def sign_up_view(request):
     ctx = create_standard_context(request)
     return userena.views.signup(request,
