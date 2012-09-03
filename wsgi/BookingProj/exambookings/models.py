@@ -293,7 +293,11 @@ class Booking(models.Model):
             bookings_list.append(bookingObj)
         return bookings_list
 
-
+    @classmethod
+    def countAppts(cls, aDatetime, aPeriod):
+        """ aPeriod is Period.ONE, etc.
+        """
+        return cls.objects.filter(testDate=aDatetime, testPeriod=aPeriod).count()
     
 
 
