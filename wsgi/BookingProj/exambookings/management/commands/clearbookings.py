@@ -3,6 +3,8 @@ from exambookings.models import Booking
 from django.db.models import Q
 from django.core.mail import send_mail
 from django.contrib.auth.models import User, Permission
+from profiles.models import prettyNameOfUser
+
 import datetime
 #import exceptions
 
@@ -43,7 +45,7 @@ class Command(BaseCommand):
         for booking in sortedBookings:
             fullReport += "- "
             fullReport += str(booking)
-            fullReport += " (" + str(booking.courseTeacher) + ")"
+            fullReport += " (" + str(prettyNameOfUser(booking.courseTeacher)) + ")"
             fullReport += "\n"
         send_mail(ReportEmail.fullReportSubject, fullReport, ReportEmail.fromEmail,
                   ReportEmail.fullReportRecipientEmails, fail_silently=True)
