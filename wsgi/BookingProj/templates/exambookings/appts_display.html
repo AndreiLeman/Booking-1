@@ -19,6 +19,9 @@
     <form class="OneClickActions" method="get" action="{{ booking.meta.editUrl.value }}">
       <input class="Button" type="submit" value="Edit" />
     </form>
+    <form class="OneClickActions" method="get" action="{{ booking.meta.duplicateUrl.value }}">
+      <input class="Button" type="submit" value="Duplicate" />
+    </form>    
     <form class="OneClickActions" method="post" action="{{ booking.meta.setCompletedUrl.value }}">
       {% csrf_token %}
       <input class="Button" type="submit" value="Test Completed" />
