@@ -1,11 +1,7 @@
 {% load widget_tweaks %}
 <div class="Field">
-  {% ifequal field.name "tzestDate" %}
-  {{ field }}
-  {% else %}
   <label class="FieldLabel" for="id_{{ field.html_name }}">{{ field.label }}</label>
   {{ field|add_class:'FieldInput' }}
-  {% endifequal %}
   {% if field.errors %}
   {{ field.errors }}
   {% endif %}
