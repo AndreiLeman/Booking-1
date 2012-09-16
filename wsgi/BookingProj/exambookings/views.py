@@ -51,6 +51,14 @@ def create_booking_view(request):
 @staff_only_view
 @authorized_user_of_this_booking_only_view
 def update_booking_view(request, pk):
+    return update_booking_or_dup(request, pk, False)
+
+@staff_only_view
+@authorized_user_of_this_booking_only_view
+def dup_and_update_booking_view(request, pk):
+    return update_booking_or_dup(request, pk, True)
+
+def update_booking_or_dup(request, pk, duplicate=False):
     ctx = create_standard_csrf_context(request)
     ctx['bookings_list'] = Booking.getAllObjectsDataNormalizedForUser(request.user) #bookings_list_for(request.user, orderedFields = True)
     
@@ -61,6 +69,9 @@ def update_booking_view(request, pk):
         exam_center_view = False
 
     appt = get_object_or_404(Booking, id__iexact=pk)
+    if duplicate:
+        appt.pk = None
+    
     if request.method == 'POST':
         if not exam_center_view:
             post = request.POST.copy()
@@ -79,7 +90,11 @@ def update_booking_view(request, pk):
     
     ctx['form'] = form
     ctx['form_fields_groups'] = form_fields_groups_for_view(request.user, form)
-    return render_to_response('exambookings/update_booking.html', ctx)
+    if duplicate:
+        useTemplate = 'exambookings/duplicate_booking.html'
+    else:
+        useTemplate = 'exambookings/update_booking.html'
+    return render_to_response(useTemplate, ctx)
 
 @staff_only_view
 @authorized_user_of_this_booking_only_view
