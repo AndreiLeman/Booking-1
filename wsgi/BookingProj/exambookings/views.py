@@ -32,7 +32,7 @@ def create_booking_view(request):
     if request.user.has_perm('exambookings.exam_center_view'):
         ctx['exam_center_view'] = True    
     
-    form = CreateBookingForm()
+    form = CreateBookingForm(initial={'testDate':datetime.datetime.now()})
     if request.method == 'POST':
         form = CreateBookingForm(request.POST, request.FILES)
 
