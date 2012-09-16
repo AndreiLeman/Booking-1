@@ -6,6 +6,8 @@ from django.core.exceptions import ValidationError
 from django.contrib.auth.models import User
 from profiles.models import prettyNameOfUser
 
+from django.db.models import Q
+
 import datetime
 ONE_DAY = datetime.timedelta(days=1)
 
@@ -100,6 +102,15 @@ class Period():
         (AFTERSCHOOL, 'After School'),
         )
     TIME_VERBOSE_NAME_MAP = dict(CHOICES)
+    NEXT_OF = {
+        TUTORIAL: ONE,
+        ONE: TWO,
+        TWO: LUNCH,
+        LUNCH: THREE,
+        THREE: FOUR,
+        FOUR: AFTERSCHOOL,
+        AFTERSCHOOL: 2359
+        }
 
 EXAM_CENTER_RM_100_CAPACITY = 30
 
@@ -336,7 +347,7 @@ class Booking(models.Model):
     def countAppts(cls, aDatetime, aPeriod):
         """ aPeriod is Period.ONE, etc.
         """
-        return cls.objects.filter(testDate=aDatetime, testBeginTime=aPeriod).count()
+        return cls.objects.filter(testDate=aDatetime, testCompleted=False).filter(Q(testBeginTime__gte=aPeriod, testBeginTime__lt=Period.NEXT_OF[aPeriod]) | Q(testEndTime__gt=aPeriod, testEndTime__lte=Period.NEXT_OF[aPeriod]) | Q(testBeginTime__lt=aPeriod, testEndTime__gt=Period.NEXT_OF[aPeriod])).count()
 
     @classmethod
     def apptStats(cls, days = 1, showApptsAvailable = False, verbosePeriodName = True):
