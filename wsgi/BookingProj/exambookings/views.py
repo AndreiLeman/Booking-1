@@ -35,8 +35,10 @@ def create_booking_view(request):
     form = CreateBookingForm()
     if request.method == 'POST':
         form = CreateBookingForm(request.POST, request.FILES)
-        form.instance.courseTeacher = request.user
-        form.instance.testEndTime = request.POST['testStartTime'] + request.POST['testDuration']
+
+        if form.is_valid():
+            form.instance.courseTeacher = request.user
+            form.instance.testEndTime = milTimeAfterMinutes(form.cleaned_data['testBeginTime'], form.cleaned_data['testDuration'])
         if form.is_valid():
             form.save()
             return HttpResponseRedirect(reverse('create_booking'))
@@ -67,12 +69,13 @@ def update_booking_view(request, pk):
         else:
             form = UpdateBookingForm(request.POST, instance=appt)
 
-        form.instance.testEndTime = form.cleaned_data['testStartTime'] + form.cleaned_data['testDuration']
+        if form.is_valid():
+            form.instance.testEndTime = milTimeAfterMinutes(form.cleaned_data['testBeginTime'], form.cleaned_data['testDuration'])
         if form.is_valid():
             form.save()
             return HttpResponseRedirect(reverse('update_booking', kwargs={'pk':pk}))
     else:
-        form = UpdateBookingForm({'testDuration': appt.testEndTime - appt.testStartTime}, instance=appt)
+        form = UpdateBookingForm(instance=appt)
     
     ctx['form'] = form
     ctx['form_fields_groups'] = form_fields_groups_for_view(request.user, form)

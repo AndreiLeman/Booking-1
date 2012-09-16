@@ -156,7 +156,10 @@ class Booking(models.Model):
     testBeginTime = models.IntegerField(choices=TEST_PERIOD_CHOICES,
                                         default=PERIOD_AFTERSCHOOL,
                                         verbose_name="Test in Period")
-    testEndTime = models.PositiveIntegerField(verbose_name="Test in Period")    
+    testEndTime = models.PositiveIntegerField(verbose_name="Test in Period")
+
+    testDuration = models.PositiveIntegerField(verbose_name="Test Duration") # this should be testEndTime - testBeginTime
+    # apparently ModelForm cannot add in "virtual" form fields that have no model backing (&*^#^&
     
     # examCenter = models.ForeignKey(ExamCenter)
     examCenter = models.CharField(max_length=5,
@@ -234,9 +237,9 @@ class Booking(models.Model):
                 "testCourseName",
                 "courseTeacher",
                 'testName',
-                'testDuration',
                 'testDate',
                 "testBeginTime",
+                'testDuration',                
                 "examCenter",
                 'extendedTimeAccomodation',
                 'computerAccomodation',
