@@ -10,18 +10,21 @@ import datetime
 class UserModelChoiceField(forms.ModelChoiceField):
     def label_from_instance(self, usr):
          return prettyNameOfUser(usr)
-    
+
 class UpdateBookingForm(forms.ModelForm):
     courseTeacher = UserModelChoiceField(queryset=User.objects.all().order_by('email'), label="Course Teacher")
     testDate = forms.DateField(widget=SelectDateWidget(years=[2012]), label="Test on Date")
+    testDuration = forms.IntegerField(min_value=0, max_value=480, initial=90, label="Test Duration", help_text="(minutes)")
     class Meta:
         model = Booking
+        exclude = ('testEndTime',)
 
 class CreateBookingForm(forms.ModelForm):
     testDate = forms.DateField(widget=SelectDateWidget(years=[2012]), label="Test on Date")
+    testDuration = forms.IntegerField(min_value=0, max_value=480, initial=90, label="Test Duration", help_text="(minutes)")
     class Meta:
         model = Booking
-        exclude = ('courseTeacher',)
+        exclude = ('courseTeacher', 'testEndTime',)
 
 def email_is_allowed_signup(email):
     """returns True only if email address is from domain
