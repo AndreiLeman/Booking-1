@@ -71,8 +71,8 @@ def form_fields_groups_for_view(user, form):
         'test': [fieldsDict.get('testCourseName'),
                  fieldsDict.get('testName'),
                  fieldsDict.get('testDate'),
-                 fieldsDict.get('testDuration'),
-                 fieldsDict.get('testPeriod'),
+                 fieldsDict.get('testBeginTime'),
+                 fieldsDict.get('testDuration'),                 
                  fieldsDict.get('examCenter'),
                  fieldsDict.get('courseTeacher'),
                  fieldsDict.get('testCompleted')],
@@ -94,3 +94,29 @@ def form_fields_groups_for_view(user, form):
         fields_grp.update({k: filter(lambda x: x!= None, v)})
     
     return fields_grp
+
+
+def minOfDayFromMilTime(milTime):
+    if milTime < 10:
+        milTimeStr = "000"+str(milTime)
+    elif milTime < 100:
+        milTimeStr = "00"+str(milTime)
+    elif milTime < 1000:
+        milTimeStr = "0"+str(milTime)
+    else:
+        milTimeStr = str(milTime)
+    hrs = int(milTimeStr[0:2])
+    mnt = int(milTimeStr[2:])
+    return 60*hrs+mnt
+
+def milTimeFromMinOfDay(minOfDay):
+    hrs = int(minOfDay/60)
+    mnt = int(minOfDay-60*hrs)
+    if mnt < 10:
+        mnt = "0"+str(mnt)
+    else:
+        mnt = str(mnt)
+    return int(str(hrs)+mnt)
+
+def milTimeAfterMinutes(milTimeStart, minutesDuration):
+    return milTimeFromMinOfDay(minOfDayFromMilTime(milTimeStart) + minutesDuration)

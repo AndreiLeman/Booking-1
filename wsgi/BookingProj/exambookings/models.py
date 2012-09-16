@@ -6,6 +6,8 @@ from django.core.exceptions import ValidationError
 from django.contrib.auth.models import User
 from profiles.models import prettyNameOfUser
 
+from django.db.models import Q
+
 import datetime
 ONE_DAY = datetime.timedelta(days=1)
 
@@ -84,12 +86,12 @@ ONE_DAY = datetime.timedelta(days=1)
 
 class Period():
     TUTORIAL = 830
-    ONE = 900
+    ONE = 855
     TWO = 1030
     LUNCH = 1200
     THREE = 1230
     FOUR = 1400
-    AFTERSCHOOL = 1530
+    AFTERSCHOOL = 1535
     CHOICES = (
         (TUTORIAL, 'Tutorial Time'),
         (ONE, 'Period 1'),
@@ -100,6 +102,15 @@ class Period():
         (AFTERSCHOOL, 'After School'),
         )
     TIME_VERBOSE_NAME_MAP = dict(CHOICES)
+    NEXT_OF = {
+        TUTORIAL: ONE,
+        ONE: TWO,
+        TWO: LUNCH,
+        LUNCH: THREE,
+        THREE: FOUR,
+        FOUR: AFTERSCHOOL,
+        AFTERSCHOOL: 2359
+        }
 
 EXAM_CENTER_RM_100_CAPACITY = 30
 
@@ -147,14 +158,19 @@ class Booking(models.Model):
     # test = models.ForeignKey(Test)
     testName = models.CharField(max_length=40,
                                 verbose_name="Test Name")
-    testDuration = models.CharField(max_length=40,
-                                    verbose_name="Test Duration")
-    testDate = models.DateField(verbose_name="Test on Date")    
+    # testDuration = models.CharField(max_length=40,
+    #                                 verbose_name="Test Duration")
+    testDate = models.DateField(verbose_name="Test on Date")
 
     # workPeriod = models.ForeignKey(WorkPeriod)
-    testPeriod = models.IntegerField(choices=TEST_PERIOD_CHOICES,
-                                     default=PERIOD_AFTERSCHOOL,
-                                     verbose_name="Test in Period")
+    #testPeriod
+    testBeginTime = models.IntegerField(choices=TEST_PERIOD_CHOICES,
+                                        default=PERIOD_AFTERSCHOOL,
+                                        verbose_name="Test in Period")
+    testEndTime = models.PositiveIntegerField(verbose_name="Test in Period")
+
+    testDuration = models.PositiveIntegerField(verbose_name="Test Duration") # this should be testEndTime - testBeginTime
+    # apparently ModelForm cannot add in "virtual" form fields that have no model backing (&*^#^&
     
     # examCenter = models.ForeignKey(ExamCenter)
     examCenter = models.CharField(max_length=5,
@@ -194,7 +210,7 @@ class Booking(models.Model):
                             'courseTeacher',
                             'testName',
                             'testDate',
-                            'testPeriod',),)
+                            'testBeginTime',),)
 
     def __repr__(self):
         s = (self.studentFirstName + " " + self.studentLastName)
@@ -204,7 +220,7 @@ class Booking(models.Model):
         else:
             done = " is NOT completed on "
         s += ("Test " + self.testName + done)
-        s += (str(self.testDate) + " " + Period.TIME_VERBOSE_NAME_MAP[self.testPeriod])
+        s += (str(self.testDate) + " " + Period.TIME_VERBOSE_NAME_MAP[self.testBeginTime])
 
         return s
 #        return super(Booking, self).__repr__()
@@ -213,8 +229,8 @@ class Booking(models.Model):
         return self.__repr__()
         
     def clean(self):
-        if Booking.countAppts(self.testDate, self.testPeriod) >= EXAM_CENTER_RM_100_CAPACITY:
-            raise ValidationError(Period.TIME_VERBOSE_NAME_MAP[self.testPeriod] + ' on ' + str(self.testDate) + ' is full.')
+        if Booking.countAppts(self.testDate, self.testBeginTime) >= EXAM_CENTER_RM_100_CAPACITY:
+            raise ValidationError(Period.TIME_VERBOSE_NAME_MAP[self.testBeginTime] + ' on ' + str(self.testDate) + ' is full.')
 
     def save(self):
         """ may throw ValidationError from full_clean
@@ -232,9 +248,9 @@ class Booking(models.Model):
                 "testCourseName",
                 "courseTeacher",
                 'testName',
-                'testDuration',
                 'testDate',
-                "testPeriod",
+                "testBeginTime",
+                'testDuration',                
                 "examCenter",
                 'extendedTimeAccomodation',
                 'computerAccomodation',
@@ -260,7 +276,7 @@ class Booking(models.Model):
                'value': eval("self."+attname)}
         if fieldNameStr  == 'courseTeacher':
             data['value'] = prettyNameOfUser(self.courseTeacher) # avoids showing foreign key id
-        elif fieldNameStr == 'testPeriod':
+        elif fieldNameStr == 'testBeginTime':
             data['value'] = Period.TIME_VERBOSE_NAME_MAP[data['value']]
         return data
 
@@ -301,7 +317,7 @@ class Booking(models.Model):
 
         if sortAppts and bookings != []:
             bookings = bookings.extra(select={'lower_studentFirstName': 'lower(studentFirstName)',
-                                              'lower_studentLastName': 'lower(studentLastName)'}).order_by('testDate', 'testPeriod',
+                                              'lower_studentLastName': 'lower(studentLastName)'}).order_by('testDate', 'testBeginTime',
                                                                                                            'lower_studentFirstName',
                                                                                                            'lower_studentLastName')
         bookings_list = []
@@ -312,6 +328,11 @@ class Booking(models.Model):
                                              'verbose_name': "Edit Booking",
                                              'help_text': '',
                                              'name': 'editUrl'},
+                                  'duplicateUrl':{'value':reverse('duplicate_booking',
+                                                                  kwargs={'pk':booking.pk}),
+                                                  'verbose_name': "Duplicate Booking",
+                                                  'help_text': '',
+                                                  'name': 'duplicateUrl'},
                                   'setCompletedUrl': {'value':reverse('set_booking_completed',
                                                                       kwargs={'pk':booking.pk}),
                                                       'verbose_name': "Test Taken",
@@ -331,7 +352,7 @@ class Booking(models.Model):
     def countAppts(cls, aDatetime, aPeriod):
         """ aPeriod is Period.ONE, etc.
         """
-        return cls.objects.filter(testDate=aDatetime, testPeriod=aPeriod).count()
+        return cls.objects.filter(testDate=aDatetime, testCompleted=False).filter(Q(testBeginTime__gte=aPeriod, testBeginTime__lt=Period.NEXT_OF[aPeriod]) | Q(testEndTime__gt=aPeriod, testEndTime__lte=Period.NEXT_OF[aPeriod]) | Q(testBeginTime__lt=aPeriod, testEndTime__gt=Period.NEXT_OF[aPeriod])).count()
 
     @classmethod
     def apptStats(cls, days = 1, showApptsAvailable = False, verbosePeriodName = True):

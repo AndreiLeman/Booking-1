@@ -59,7 +59,7 @@ SITE_ID = 1
 
 # If you set this to False, Django will make some optimizations so as not
 # to load the internationalization machinery.
-USE_I18N = True
+USE_I18N = False
 
 # If you set this to False, Django will not format dates, numbers and
 # calendars according to the current locale
@@ -168,6 +168,7 @@ USERENA_WITHOUT_USERNAMES = True
 USERENA_DEFAULT_PRIVACY = 'closed'
 USERENA_HIDE_EMAIL = True
 USERENA_USE_HTTPS = False
+USERENA_ACTIVATION_REQUIRED = True
 
 ROOT_URLCONF = 'BookingProj.urls'
 

@@ -58,11 +58,11 @@
 
             <div class="sixcol last right_col">
 	      <form class="ApptEditForm" method="post" action="">
-		<h3>Update Appointment</h3>		
+		<h3>{% block pageActionName %}Update Appointment{% endblock %}</h3>
 		{% include "exambookings/appt_edit_form_body.html" %}
 		<div class="submit1">
 		  <label for="submit_id">
-		    <input type="submit" id="submit_id" value="Update Appointment" /></label>
+		    <input type="submit" id="submit_id" value="{% block formSubmitButtonValue %}Update Appointment{% endblock %}" /></label>
 		</div>
 	      </form>
             </div>
