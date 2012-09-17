@@ -101,7 +101,7 @@ def dup_or_update_booking(request, pk, duplicate=False):
             form.save()
             return HttpResponseRedirect(reverse('update_booking', kwargs={'pk':pk}))
     else:
-        form = UpdateBookingForm(instance=appt)
+        form = UpdateBookingForm(instance=appt, initial={'testBeginTime':Period.idOfPeriodStartTimeOnDay(appt.testBeginTime, appt.testDate)})
     
     ctx['form'] = form
     ctx['form_fields_groups'] = form_fields_groups_for_view(request.user, form)
