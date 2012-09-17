@@ -62,10 +62,15 @@ def update_booking_view(request, pk):
 
 @staff_only_view
 @authorized_user_of_this_booking_only_view
+def update_booking_success_view(request, pk):
+    return dup_or_update_booking(request, pk, False, True)
+
+@staff_only_view
+@authorized_user_of_this_booking_only_view
 def dup_and_update_booking_view(request, pk):
     return dup_or_update_booking(request, pk, True)
 
-def dup_or_update_booking(request, pk, duplicate=False):
+def dup_or_update_booking(request, pk, duplicate=False, saved=False):
     ctx = create_standard_csrf_context(request)
     ctx['bookings_list'] = Booking.getAllObjectsDataNormalizedForUser(request.user) #bookings_list_for(request.user, orderedFields = True)
     
@@ -99,12 +104,13 @@ def dup_or_update_booking(request, pk, duplicate=False):
         # save()ing            
         if form.is_valid():
             form.save()
-            return HttpResponseRedirect(reverse('update_booking', kwargs={'pk':pk}))
+            return HttpResponseRedirect(reverse('update_booking_success', kwargs={'pk':pk}))
     else:
         form = UpdateBookingForm(instance=appt, initial={'testBeginTime':Period.idOfPeriodStartTimeOnDay(appt.testBeginTime, appt.testDate)})
     
     ctx['form'] = form
     ctx['form_fields_groups'] = form_fields_groups_for_view(request.user, form)
+    ctx['saved'] = saved
     if duplicate:
         useTemplate = 'exambookings/duplicate_booking.html'
     else:
