@@ -17,7 +17,7 @@ PRODUCTION_SIGNUP_EMAIL_WHITELIST = []
 ############################################################
 ############################################################
 
-MAIN_EMAIL_DOMAIN_RE_PATTERN = RE_PATTERN_example_com
-MAIN_EMAIL_DOMAIN = EXAMPLE_COM_DOMAIN
+MAIN_EMAIL_DOMAIN_RE_PATTERN = RE_PATTERN_cbe_ab_ca
+MAIN_EMAIL_DOMAIN = CBE_AB_CA_DOMAIN
 SIGNUP_EMAIL_WHITELIST = EXAMPLE_SIGNUP_EMAIL_WHITELIST
 
