@@ -104,6 +104,7 @@ def dup_or_update_booking(request, pk, duplicate=False, saved=False):
         # save()ing            
         if form.is_valid():
             form.save()
+            pk = form.instance.pk
             return HttpResponseRedirect(reverse('update_booking_success', kwargs={'pk':pk}))
     else:
         form = UpdateBookingForm(instance=appt, initial={'testBeginTime':Period.idOfPeriodStartTimeOnDay(appt.testBeginTime, appt.testDate)})
