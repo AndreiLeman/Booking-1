@@ -163,10 +163,10 @@ class Booking(models.Model):
     testDate = models.DateField(verbose_name="Test on Date")
 
     # workPeriod = models.ForeignKey(WorkPeriod)
-    #testPeriod
-    testBeginTime = models.IntegerField(choices=TEST_PERIOD_CHOICES,
-                                        default=PERIOD_AFTERSCHOOL,
-                                        verbose_name="Test in Period")
+    #testPeriod = models.IntegerField(choices=TEST_PERIOD_CHOICES,
+    #                                    default=PERIOD_AFTERSCHOOL,
+    #                                    verbose_name="Test in Period")
+    testBeginTime = models.IntegerField(verbose_name="Test in Period")
     testEndTime = models.PositiveIntegerField(verbose_name="Test in Period")
 
     testDuration = models.PositiveIntegerField(verbose_name="Test Duration") # this should be testEndTime - testBeginTime

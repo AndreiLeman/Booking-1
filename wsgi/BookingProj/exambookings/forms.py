@@ -1,6 +1,6 @@
 from django import forms
 from django.forms.extras.widgets import SelectDateWidget
-from exambookings.models import Booking
+from exambookings.models import Booking, Period
 from django.contrib.auth.models import User, Permission
 import userena.forms, re
 from exambookings import settings
@@ -14,14 +14,16 @@ class UserModelChoiceField(forms.ModelChoiceField):
 class UpdateBookingForm(forms.ModelForm):
     courseTeacher = UserModelChoiceField(queryset=User.objects.all().order_by('email'), label="Course Teacher")
     testDate = forms.DateField(widget=SelectDateWidget(years=[2012]), label="Test on Date")
-    testDuration = forms.IntegerField(min_value=0, max_value=480, initial=90, label="Test Duration", help_text="(minutes)")
+    testDuration = forms.IntegerField(min_value=0, max_value=480, initial=90, label="Test Duration (minutes)")
+    testBeginTime = forms.TypedChoiceField(choices=Period.CHOICES, coerce=int, label="Test Period")
     class Meta:
         model = Booking
         exclude = ('testEndTime',)
 
 class CreateBookingForm(forms.ModelForm):
     testDate = forms.DateField(widget=SelectDateWidget(years=[2012]), label="Test on Date")
-    testDuration = forms.IntegerField(min_value=0, max_value=480, initial=90, label="Test Duration", help_text="(minutes)")
+    testDuration = forms.IntegerField(min_value=0, max_value=480, initial=90, label="Test Duration (minutes)")
+    testBeginTime = forms.TypedChoiceField(choices=Period.CHOICES, coerce=int, label="Test Period")
     class Meta:
         model = Booking
         exclude = ('courseTeacher', 'testEndTime',)
