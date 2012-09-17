@@ -444,10 +444,18 @@ class Booking(models.Model):
         for x in range(days):
             dayStats = []
             for k,v in Period.CHOICES:
-                if showApptsAvailable:
-                    apptCnt = EXAM_CENTER_RM_100_CAPACITY - cls.countAppts(day, k)
+                periodLength = Period.lengthOfPeriodIdOnDay(k, day)
+                if periodLength > 5:
+                    if showApptsAvailable:
+                        apptCnt = EXAM_CENTER_RM_100_CAPACITY - cls.countAppts(day, k)
+                    else:
+                        apptCnt = cls.countAppts(day, k)
                 else:
-                    apptCnt = cls.countAppts(day, k)
+                    apptCnt = 0
+                    # this is a hack so that every day has same
+                    # periods, but some periods are 5 or less minutes
+                    # long to show the periods aren't actually
+                    # real/useful
                 if verbosePeriodName:
                     perName = Period.TIME_VERBOSE_NAME_MAP[k]
                 else:
