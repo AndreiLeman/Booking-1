@@ -303,7 +303,8 @@ class Booking(models.Model):
         return self.__repr__()
         
     def clean(self):
-        if Booking.countAppts(self.testDate, self.testBeginTime) >= EXAM_CENTER_RM_100_CAPACITY:
+        perId = Period.idOfPeriodStartTimeOnDay(self.testBeginTime, self.testDate)
+        if Booking.countAppts(self.testDate, perId) >= EXAM_CENTER_RM_100_CAPACITY:
             raise ValidationError(Period.TIME_VERBOSE_NAME_MAP[self.testBeginTime] + ' on ' + str(self.testDate) + ' is full.')
 
     def save(self):
@@ -351,7 +352,10 @@ class Booking(models.Model):
         if fieldNameStr  == 'courseTeacher':
             data['value'] = prettyNameOfUser(self.courseTeacher) # avoids showing foreign key id
         elif fieldNameStr == 'testBeginTime':
-            data['value'] = Period.TIME_VERBOSE_NAME_MAP[data['value']]
+            theDay = self.fieldDataOf('testDate')['value']
+            perTimeStart = data['value']
+            perId = Period.idOfPeriodStartTimeOnDay(perTimeStart, theDay)
+            data['value'] = Period.TIME_VERBOSE_NAME_MAP[perId]
         return data
 
     def getNormalizedDataOfFields(self, fieldNamesList=None, orderedFields=False, incl_false_bool_fields=False):
@@ -423,10 +427,12 @@ class Booking(models.Model):
         return bookings_list
 
     @classmethod
-    def countAppts(cls, aDatetime, aPeriod):
-        """ aPeriod is Period.ONE, etc.
+    def countAppts(cls, aDatetime, aPeriodId):
+        """ aPeriodId is Period.ONE, etc.
         """
-        return cls.objects.filter(testDate=aDatetime, testCompleted=False).filter(Q(testBeginTime__gte=aPeriod, testBeginTime__lt=Period.NEXT_OF[aPeriod]) | Q(testEndTime__gt=aPeriod, testEndTime__lte=Period.NEXT_OF[aPeriod]) | Q(testBeginTime__lt=aPeriod, testEndTime__gt=Period.NEXT_OF[aPeriod])).count()
+        aPeriodStart = Period.startTimeOfPeriodIdOnDay(aPeriodId, aDatetime)
+        aPeriodEnds = Period.nextPeriodStartTimeOfPeriodIdOnDay(aPeriodId, aDatetime)
+        return cls.objects.filter(testDate=aDatetime, testCompleted=False).filter(Q(testBeginTime__gte=aPeriodStart, testBeginTime__lt=aPeriodEnds) | Q(testEndTime__gt=aPeriodStart, testEndTime__lte=aPeriodEnds) | Q(testBeginTime__lt=aPeriodStart, testEndTime__gt=aPeriodEnds)).count()
 
     @classmethod
     def apptStats(cls, days = 1, showApptsAvailable = False, verbosePeriodName = True):
