@@ -11,6 +11,10 @@ from django.db.models import Q
 import datetime
 ONE_DAY = datetime.timedelta(days=1)
 
+EXAM_CENTER_RM_100_CAPACITY = 30
+
+
+
 # Create your models here.
 # class StudentProfile(models.Model):
 #     baseProfile = models.OneToOneField(BaseProfile,
@@ -84,14 +88,32 @@ ONE_DAY = datetime.timedelta(days=1)
 #             ("exam_center_view", "Can view all bookings"),
 #             )
 
+
+
 class Period():
-    TUTORIAL = 830
-    ONE = 855
-    TWO = 1030
-    LUNCH = 1200
-    THREE = 1230
-    FOUR = 1400
-    AFTERSCHOOL = 1535
+    """Note period starts differently on fridays.
+    So these constants should be treated as "code" or "period ID".
+    For actual start times, see FRIDAY_PERIOD_STARTS
+    and MON_TO_THUR_PERIOD_STARTS."""
+    TUTORIAL = 0
+    ONE = 1
+    TWO = 2
+    LUNCH = 3
+    THREE = 4
+    FOUR = 5
+    AFTERSCHOOL = 6
+    SCHOOL_CLOSES = 7
+    END_OF_DAY = 8
+    ID_OF_NEXT = {
+        TUTORIAL: ONE,
+        ONE: TWO,
+        TWO: LUNCH,
+        LUNCH: THREE,
+        THREE: FOUR,
+        FOUR: AFTERSCHOOL,
+        AFTERSCHOOL: SCHOOL_CLOSES,
+        SCHOOL_CLOSES: END_OF_DAY
+        }
     CHOICES = (
         (TUTORIAL, 'Tutorial Time'),
         (ONE, 'Period 1'),
@@ -102,17 +124,78 @@ class Period():
         (AFTERSCHOOL, 'After School'),
         )
     TIME_VERBOSE_NAME_MAP = dict(CHOICES)
-    NEXT_OF = {
-        TUTORIAL: ONE,
-        ONE: TWO,
-        TWO: LUNCH,
-        LUNCH: THREE,
-        THREE: FOUR,
-        FOUR: AFTERSCHOOL,
-        AFTERSCHOOL: 2359
+    
+    # this is rather ugly. should've thought of this problem before,
+    # where period starts can change whenver for any reason
+    # todo: fix this when we rewrite this App as planned
+    FRIDAY_PERIOD_START_TIMES = {
+        TUTORIAL: 900,
+        ONE: 905,
+        TWO: 1010,
+        LUNCH: 1114,
+        THREE: 1115,
+        FOUR: 1220,
+        AFTERSCHOOL: 1320,
+        SCHOOL_CLOSES: 1500,
+        END_OF_DAY: 2359
         }
+    FRIDAY_PERIOD_START_TIMES_TO_ID = dict((v,k) for k,v in FRIDAY_PERIOD_START_TIMES.iteritems())
+    MON_TO_THUR_PERIOD_START_TIMES = {
+        TUTORIAL: 830,
+        ONE: 855,
+        TWO: 1030,
+        LUNCH: 1200,
+        THREE: 1230,
+        FOUR: 1405,
+        AFTERSCHOOL: 1535,
+        SCHOOL_CLOSES: 1700,
+        END_OF_DAY: 2359
+        }
+    MON_TO_THUR_PERIOD_START_TIMES_TO_ID = dict((v,k) for k,v in MON_TO_THUR_PERIOD_START_TIMES.iteritems())
 
-EXAM_CENTER_RM_100_CAPACITY = 30
+    @classmethod
+    def idOfPeriodStartTimeOnDay(cls, periodStarts, theDay):
+        if periodStarts >= cls.TUTORIAL and periodStarts <= cls.END_OF_DAY:
+            # we're abusing the database testBeginTime field, because
+            # in the short term we just want this thing done and
+            # working most of the time (no period actually starts
+            # between 00:00 and 00:08). In the long term, this app
+            # needs a rewrite
+            return periodStarts
+            
+        FRIDAY = 4
+        if theDay == datetime.date(2012,12,31):
+            # special day, treated specially
+            periodIDs = cls.FRIDAY_PERIOD_START_TIMES_TO_ID
+        elif theDay.weekday() == FRIDAY:
+            periodIDs = cls.FRIDAY_PERIOD_START_TIMES_TO_ID
+        else:
+            periodIDs = cls.MON_TO_THUR_PERIOD_START_TIMES_TO_ID
+        return periodIDs[periodStarts]
+    
+    @classmethod
+    def startTimeOfPeriodIdOnDay(cls, thePeriodId, theDay):
+        FRIDAY = 4
+        if theDay == datetime.date(2012,12,31):
+            # special day, treated specially
+            periodStarts = cls.FRIDAY_PERIOD_START_TIMES
+        elif theDay.weekday() == FRIDAY:
+            periodStarts = cls.FRIDAY_PERIOD_START_TIMES
+        else:
+            periodStarts = cls.MON_TO_THUR_PERIOD_START_TIMES
+        return periodStarts[thePeriodId]
+
+    @classmethod
+    def nextPeriodStartTimeOfPeriodIdOnDay(cls, thePeriodId, theDay):
+        """ insert period schedule into startsOnDay(...)
+        """
+        nextPerId = cls.ID_OF_NEXT[thePeriodId]
+        return cls.startTimeOfPeriodIdOnDay(nextPerId, theDay)
+
+    @classmethod
+    def lengthOfPeriodIdOnDay(cls, periodId, theDay):
+        return cls.nextPeriodStartTimeOfPeriodIdOnDay(periodId, theDay) - cls.startTimeOfPeriodIdOnDay(periodId, theDay)
+
 
 class Booking(models.Model):
     GRADE_TEN = 10
@@ -129,15 +212,6 @@ class Booking(models.Model):
         (EXAM_CENTER_RM_100, "Main Exam Center - Rm 100"),
         )
     
-    PERIOD_TUTORIAL = Period.TUTORIAL
-    PERIOD_ONE = Period.ONE
-    PERIOD_TWO = Period.TWO
-    PERIOD_LUNCH = Period.LUNCH
-    PERIOD_THREE = Period.THREE
-    PERIOD_FOUR = Period.FOUR
-    PERIOD_AFTERSCHOOL = Period.AFTERSCHOOL
-    TEST_PERIOD_CHOICES = Period.CHOICES
-
     # studentProfile = models.ForeignKey(StudentProfile)
     studentFirstName = models.CharField(max_length=30,
                                         verbose_name="Student's First Name")
