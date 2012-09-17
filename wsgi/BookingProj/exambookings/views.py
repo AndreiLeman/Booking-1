@@ -26,7 +26,8 @@ def create_booking_view(request):
     ctx['bookings_list'] = Booking.getAllObjectsDataNormalizedForUser(request.user) #bookings_list_for(request.user, orderedFields = True)
 
     now = datetime.datetime.now()
-    ctx['availableAppts'] = Booking.apptStats(4, showApptsAvailable = True)
+    DAYS_OF_STATS_TO_SHOW = 5
+    ctx['availableAppts'] = Booking.apptStats(DAYS_OF_STATS_TO_SHOW, showApptsAvailable = True)
     ctx['refreshTime'] =  now.strftime("%b %d, %I:%M %p")
 
     if request.user.has_perm('exambookings.exam_center_view'):
