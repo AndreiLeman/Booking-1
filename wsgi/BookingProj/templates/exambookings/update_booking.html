@@ -59,6 +59,9 @@
             <div class="sixcol last right_col">
 	      <form class="ApptEditForm" method="post" action="">
 		<h3>{% block pageActionName %}Update Appointment{% endblock %}</h3>
+		{% if saved %}
+		<p>Saved!</p>
+		{% endif %}
 		{% include "exambookings/appt_edit_form_body.html" %}
 		<div class="submit1">
 		  <label for="submit_id">

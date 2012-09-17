@@ -26,7 +26,8 @@ def create_booking_view(request):
     ctx['bookings_list'] = Booking.getAllObjectsDataNormalizedForUser(request.user) #bookings_list_for(request.user, orderedFields = True)
 
     now = datetime.datetime.now()
-    ctx['availableAppts'] = Booking.apptStats(4, showApptsAvailable = True)
+    DAYS_OF_STATS_TO_SHOW = 5
+    ctx['availableAppts'] = Booking.apptStats(DAYS_OF_STATS_TO_SHOW, showApptsAvailable = True)
     ctx['refreshTime'] =  now.strftime("%b %d, %I:%M %p")
 
     if request.user.has_perm('exambookings.exam_center_view'):
@@ -37,8 +38,14 @@ def create_booking_view(request):
         form = CreateBookingForm(request.POST, request.FILES)
 
         if form.is_valid():
+            perId = form.cleaned_data['testBeginTime']
             form.instance.courseTeacher = request.user
-            form.instance.testEndTime = milTimeAfterMinutes(form.cleaned_data['testBeginTime'], form.cleaned_data['testDuration'])
+            form.instance.testBeginTime = Period.startTimeOfPeriodIdOnDay(perId, form.cleaned_data['testDate'])
+            form.instance.testEndTime = milTimeAfterMinutes(form.instance.testBeginTime, form.cleaned_data['testDuration'])
+        # double is_valid() call is required. testBeginTime model
+        # field is hacked to support storing period IDs prior to
+        # save() but should always be set to period start times when
+        # save()ing
         if form.is_valid():
             form.save()
             return HttpResponseRedirect(reverse('create_booking'))
@@ -51,14 +58,19 @@ def create_booking_view(request):
 @staff_only_view
 @authorized_user_of_this_booking_only_view
 def update_booking_view(request, pk):
-    return update_booking_or_dup(request, pk, False)
+    return dup_or_update_booking(request, pk, False)
+
+@staff_only_view
+@authorized_user_of_this_booking_only_view
+def update_booking_success_view(request, pk):
+    return dup_or_update_booking(request, pk, False, True)
 
 @staff_only_view
 @authorized_user_of_this_booking_only_view
 def dup_and_update_booking_view(request, pk):
-    return update_booking_or_dup(request, pk, True)
+    return dup_or_update_booking(request, pk, True)
 
-def update_booking_or_dup(request, pk, duplicate=False):
+def dup_or_update_booking(request, pk, duplicate=False, saved=False):
     ctx = create_standard_csrf_context(request)
     ctx['bookings_list'] = Booking.getAllObjectsDataNormalizedForUser(request.user) #bookings_list_for(request.user, orderedFields = True)
     
@@ -81,15 +93,25 @@ def update_booking_or_dup(request, pk, duplicate=False):
             form = UpdateBookingForm(request.POST, instance=appt)
 
         if form.is_valid():
-            form.instance.testEndTime = milTimeAfterMinutes(form.cleaned_data['testBeginTime'], form.cleaned_data['testDuration'])
+            perId = form.cleaned_data['testBeginTime']
+            formTestDate = form.cleaned_data['testDate']
+            periodStartTime = Period.startTimeOfPeriodIdOnDay(perId, formTestDate)
+            form.instance.testBeginTime = periodStartTime
+            form.instance.testEndTime = milTimeAfterMinutes(periodStartTime, form.cleaned_data['testDuration'])
+        # double is_valid() call is required. testBeginTime model
+        # field is hacked to support storing period IDs prior to
+        # save() but should always be set to period start times when
+        # save()ing            
         if form.is_valid():
             form.save()
-            return HttpResponseRedirect(reverse('update_booking', kwargs={'pk':pk}))
+            pk = form.instance.pk
+            return HttpResponseRedirect(reverse('update_booking_success', kwargs={'pk':pk}))
     else:
-        form = UpdateBookingForm(instance=appt)
+        form = UpdateBookingForm(instance=appt, initial={'testBeginTime':Period.idOfPeriodStartTimeOnDay(appt.testBeginTime, appt.testDate)})
     
     ctx['form'] = form
     ctx['form_fields_groups'] = form_fields_groups_for_view(request.user, form)
+    ctx['saved'] = saved
     if duplicate:
         useTemplate = 'exambookings/duplicate_booking.html'
     else:
