@@ -52,14 +52,14 @@ def create_booking_view(request):
 @staff_only_view
 @authorized_user_of_this_booking_only_view
 def update_booking_view(request, pk):
-    return update_booking_or_dup(request, pk, False)
+    return dup_or_update_booking(request, pk, False)
 
 @staff_only_view
 @authorized_user_of_this_booking_only_view
 def dup_and_update_booking_view(request, pk):
-    return update_booking_or_dup(request, pk, True)
+    return dup_or_update_booking(request, pk, True)
 
-def update_booking_or_dup(request, pk, duplicate=False):
+def dup_or_update_booking(request, pk, duplicate=False):
     ctx = create_standard_csrf_context(request)
     ctx['bookings_list'] = Booking.getAllObjectsDataNormalizedForUser(request.user) #bookings_list_for(request.user, orderedFields = True)
     
