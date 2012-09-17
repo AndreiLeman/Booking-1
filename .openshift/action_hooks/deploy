@@ -14,7 +14,7 @@ then
 else
     echo "Executing 'python $OPENSHIFT_REPO_DIR/wsgi/BookingProj/manage.py syncdb --noinput'"
     python "$OPENSHIFT_REPO_DIR"wsgi/BookingProj/manage.py syncdb --noinput
-    python "$OPENSHIFT_REPO_DIR"wsgi/BookingProj/manage.py check_permissions --noinput
+    python "$OPENSHIFT_REPO_DIR"wsgi/BookingProj/manage.py check_permissions
 fi
 
 # runs manage.py collectstatic
