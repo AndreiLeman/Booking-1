@@ -156,12 +156,15 @@ class Period():
     @classmethod
     def idOfPeriodStartTimeOnDay(cls, periodStarts, theDay):
         if periodStarts >= cls.TUTORIAL and periodStarts <= cls.END_OF_DAY:
-            # we're abusing the database testBeginTime field, because
-            # in the short term we just want this thing done and
-            # working most of the time (no period actually starts
-            # between 00:00 and 00:08). In the long term, this app
-            # needs a rewrite
+            # we're abusing the database testBeginTime field.
+            # testBeginTime model field is hacked to support storing
+            # period IDs prior to a call to save(), but should always
+            # be set to real period start times when save()ing
             return periodStarts
+            # in the short term, this hack should work most of the
+            # time without ambiguity since no period actually starts
+            # between 00:00 and 00:08. In the long term, this is a
+            # todo and should be fixed in the next rewrite.
             
         FRIDAY = 4
         if theDay == datetime.date(2012,12,31):

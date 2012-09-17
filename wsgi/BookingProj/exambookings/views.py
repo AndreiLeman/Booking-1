@@ -38,8 +38,14 @@ def create_booking_view(request):
         form = CreateBookingForm(request.POST, request.FILES)
 
         if form.is_valid():
+            perId = form.cleaned_data['testBeginTime']
             form.instance.courseTeacher = request.user
-            form.instance.testEndTime = milTimeAfterMinutes(form.cleaned_data['testBeginTime'], form.cleaned_data['testDuration'])
+            form.instance.testBeginTime = Period.startTimeOfPeriodIdOnDay(perId, form.cleaned_data['testDate'])
+            form.instance.testEndTime = milTimeAfterMinutes(form.instance.testBeginTime, form.cleaned_data['testDuration'])
+        # double is_valid() call is required. testBeginTime model
+        # field is hacked to support storing period IDs prior to
+        # save() but should always be set to period start times when
+        # save()ing
         if form.is_valid():
             form.save()
             return HttpResponseRedirect(reverse('create_booking'))
@@ -82,7 +88,15 @@ def dup_or_update_booking(request, pk, duplicate=False):
             form = UpdateBookingForm(request.POST, instance=appt)
 
         if form.is_valid():
-            form.instance.testEndTime = milTimeAfterMinutes(form.cleaned_data['testBeginTime'], form.cleaned_data['testDuration'])
+            perId = form.cleaned_data['testBeginTime']
+            formTestDate = form.cleaned_data['testDate']
+            periodStartTime = Period.startTimeOfPeriodIdOnDay(perId, formTestDate)
+            form.instance.testBeginTime = periodStartTime
+            form.instance.testEndTime = milTimeAfterMinutes(periodStartTime, form.cleaned_data['testDuration'])
+        # double is_valid() call is required. testBeginTime model
+        # field is hacked to support storing period IDs prior to
+        # save() but should always be set to period start times when
+        # save()ing            
         if form.is_valid():
             form.save()
             return HttpResponseRedirect(reverse('update_booking', kwargs={'pk':pk}))
