@@ -45,6 +45,7 @@ def create_standard_context(request):
     ctx = {}
     if request.user.is_authenticated():
         ctx['user_logged_in'] = True
+        ctx['user_name_verbose'] = request.user.get_full_name()
     return ctx
 
 def create_standard_csrf_context(request):
