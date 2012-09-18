@@ -296,10 +296,16 @@ class Booking(models.Model):
         s += (" in " + self.testCourseName + ": ")
         if self.testCompleted:
             done = " is completed on "
+        elif self.noShow:
+            done = " is no-show on "
         else:
             done = " is NOT completed on "
         s += ("Test " + self.testName + done)
-        s += (str(self.testDate) + " " + Period.TIME_VERBOSE_NAME_MAP[self.testBeginTime])
+        perId = Period.idOfPeriodStartTimeOnDay(self.testBeginTime, self.testDate)
+        s += (str(self.testDate) + " " + Period.TIME_VERBOSE_NAME_MAP[perId])
+
+        if len(self.apptExtraInfo) > 0:
+            s += ("\n" + "Extra Info: " + self.apptExtraInfo)
 
         return s
 #        return super(Booking, self).__repr__()
@@ -316,7 +322,7 @@ class Booking(models.Model):
         """ may throw ValidationError from full_clean
         """
         with transaction.commit_on_success():
-            print "doing transaction"
+            #print "doing transaction"
             self.full_clean()
             super(Booking, self).save()
 
