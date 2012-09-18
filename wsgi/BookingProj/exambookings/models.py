@@ -274,7 +274,8 @@ class Booking(models.Model):
 
     testCompleted = models.BooleanField(verbose_name="Test Taken")
     noShow = models.BooleanField(verbose_name="No Show")
-
+    apptExtraInfo = models.TextField(blank=True, verbose_name="Extra Info")
+    
     class Meta:
         permissions = (
             ("teacher_view", "Can view teacher's own bookings"),
@@ -343,6 +344,7 @@ class Booking(models.Model):
                 'computerInternetAllowance',
                 'englishDictionaryThesaurusAllowance',
                 'otherAllowances',
+                'apptExtraInfo',
                 'testCompleted',
                 'noShow']
 
