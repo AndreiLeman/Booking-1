@@ -31,12 +31,12 @@ class Command(BaseCommand):
     help = 'Clean up exambookings by emailing reports and deleting old appointments'
 
     def handle(self, *args, **options):
-        bookings = Booking.objects.filter(Q(testDate__lt=cutoffDay) | Q(testCompleted=True))
+        bookings = Booking.objects.filter(Q(testDate__lt=cutoffDay) | Q(testCompleted=True) | Q(noShow=True))
         if bookings.count() == 0:
             return
         
         sortedBookings = bookings.extra(select={'lower_studentFirstName': 'lower(studentFirstName)',
-                                                'lower_studentLastName': 'lower(studentLastName)'}).order_by('testDate', 'testPeriod',
+                                                'lower_studentLastName': 'lower(studentLastName)'}).order_by('testDate', 'testBeginTime',
                                                                                                              'lower_studentFirstName',
                                                                                                              'lower_studentLastName')
 
@@ -46,7 +46,7 @@ class Command(BaseCommand):
             fullReport += "- "
             fullReport += str(booking)
             fullReport += " (" + str(prettyNameOfUser(booking.courseTeacher)) + ")"
-            fullReport += "\n"
+            fullReport += "\n\n"
         send_mail(ReportEmail.fullReportSubject, fullReport, ReportEmail.fromEmail,
                   ReportEmail.fullReportRecipientEmails, fail_silently=True)
 
@@ -61,7 +61,7 @@ class Command(BaseCommand):
                 for booking in sortedBookings.filter(courseTeacher = pk):
                     report += "- "
                     report += str(booking)
-                    report += "\n"
+                    report += "\n\n"
                     bookingsReportedToTeacher.append(booking)
                 send_mail(ReportEmail.individualReportSubject, report, ReportEmail.fromEmail,
                           [courseTeacherEmail], fail_silently=False)

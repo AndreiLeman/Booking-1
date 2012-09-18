@@ -130,6 +130,18 @@ def set_booking_completed_view(request, pk):
             pass # errors contained in e.message_dict
     return HttpResponseRedirect(reverse('create_booking'))
 
+@staff_only_view
+@authorized_user_of_this_booking_only_view
+def set_no_show_view(request, pk):
+    if request.method == 'POST':
+        appt = get_object_or_404(Booking, id__iexact=pk)
+        appt.noShow = True
+        try:
+            appt.save()
+        except ValidationError as e:
+            pass # errors contained in e.message_dict
+    return HttpResponseRedirect(reverse('create_booking'))
+
 
 @staff_only_view
 @authorized_user_of_this_booking_only_view

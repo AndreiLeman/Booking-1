@@ -45,6 +45,7 @@ def create_standard_context(request):
     ctx = {}
     if request.user.is_authenticated():
         ctx['user_logged_in'] = True
+        ctx['user_name_verbose'] = request.user.get_full_name()
     return ctx
 
 def create_standard_csrf_context(request):
@@ -75,7 +76,9 @@ def form_fields_groups_for_view(user, form):
                  fieldsDict.get('testDuration'),                 
                  fieldsDict.get('examCenter'),
                  fieldsDict.get('courseTeacher'),
-                 fieldsDict.get('testCompleted')],
+                 fieldsDict.get('testCompleted'),
+                 fieldsDict.get('noShow'),
+                 fieldsDict.get('apptExtraInfo')],
         'accommodations': [fieldsDict.get('extendedTimeAccomodation'),
                            fieldsDict.get('computerAccomodation'),
                            fieldsDict.get('scribeAccomodation'),

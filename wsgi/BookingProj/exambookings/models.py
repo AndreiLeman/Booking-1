@@ -273,7 +273,9 @@ class Booking(models.Model):
     otherAllowances = models.CharField(max_length=200, blank=True, verbose_name="Other Allowances")
 
     testCompleted = models.BooleanField(verbose_name="Test Taken")
-
+    noShow = models.BooleanField(verbose_name="No Show")
+    apptExtraInfo = models.TextField(blank=True, verbose_name="Extra Info")
+    
     class Meta:
         permissions = (
             ("teacher_view", "Can view teacher's own bookings"),
@@ -294,10 +296,16 @@ class Booking(models.Model):
         s += (" in " + self.testCourseName + ": ")
         if self.testCompleted:
             done = " is completed on "
+        elif self.noShow:
+            done = " is no-show on "
         else:
             done = " is NOT completed on "
         s += ("Test " + self.testName + done)
-        s += (str(self.testDate) + " " + Period.TIME_VERBOSE_NAME_MAP[self.testBeginTime])
+        perId = Period.idOfPeriodStartTimeOnDay(self.testBeginTime, self.testDate)
+        s += (str(self.testDate) + " " + Period.TIME_VERBOSE_NAME_MAP[perId])
+
+        if len(self.apptExtraInfo) > 0:
+            s += ("\n" + "Extra Info: " + self.apptExtraInfo)
 
         return s
 #        return super(Booking, self).__repr__()
@@ -314,7 +322,7 @@ class Booking(models.Model):
         """ may throw ValidationError from full_clean
         """
         with transaction.commit_on_success():
-            print "doing transaction"
+            #print "doing transaction"
             self.full_clean()
             super(Booking, self).save()
 
@@ -342,7 +350,9 @@ class Booking(models.Model):
                 'computerInternetAllowance',
                 'englishDictionaryThesaurusAllowance',
                 'otherAllowances',
-                'testCompleted']
+                'apptExtraInfo',
+                'testCompleted',
+                'noShow']
 
     def fieldDataOf(self, fieldNameStr):
         f = self._meta.get_field(fieldNameStr)
@@ -419,6 +429,11 @@ class Booking(models.Model):
                                                       'verbose_name': "Test Taken",
                                                       'help_text': '',
                                                       'name': 'setCompletedUrl'},
+                                  'setNoShowUrl': {'value':reverse('set_no_show',
+                                                                   kwargs={'pk':booking.pk}),
+                                                   'verbose_name': "No Show",
+                                                   'help_text': '',
+                                                   'name': 'setNoShowUrl'},
                                   'deleteUrl': {'value':reverse('delete_booking',
                                                                 kwargs={'pk':booking.pk}),
                                                 'verbose_name': "Delete Booking",
@@ -435,7 +450,7 @@ class Booking(models.Model):
         """
         aPeriodStart = Period.startTimeOfPeriodIdOnDay(aPeriodId, aDatetime)
         aPeriodEnds = Period.nextPeriodStartTimeOfPeriodIdOnDay(aPeriodId, aDatetime)
-        return cls.objects.filter(testDate=aDatetime, testCompleted=False).filter(Q(testBeginTime__gte=aPeriodStart, testBeginTime__lt=aPeriodEnds) | Q(testEndTime__gt=aPeriodStart, testEndTime__lte=aPeriodEnds) | Q(testBeginTime__lt=aPeriodStart, testEndTime__gt=aPeriodEnds)).count()
+        return cls.objects.filter(testDate=aDatetime, testCompleted=False, noShow=False).filter(Q(testBeginTime__gte=aPeriodStart, testBeginTime__lt=aPeriodEnds) | Q(testEndTime__gt=aPeriodStart, testEndTime__lte=aPeriodEnds) | Q(testBeginTime__lt=aPeriodStart, testEndTime__gt=aPeriodEnds)).count()
 
     @classmethod
     def apptStats(cls, days = 1, showApptsAvailable = False, verbosePeriodName = True):

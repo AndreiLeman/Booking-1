@@ -5,10 +5,20 @@
   <a href="/exambookings/booking"><div class="threecol button">Book an Exam</div></a>
   <a href="/exambookings/signout"><div class="threecol button">Sign Out</div></a>
   <a href="/exambookings/accounts"><div class="threecol button">Edit Account</div></a>
-  <div class="threecol last">&nbsp;</div>
+  <div class="threecol last" style="padding-top: 1.5ex;">
+    {% if user_name_verbose %}
+    Hi {{ user_name_verbose }}
+    {% endif %}
+    &nbsp;
+  </div>
   {% else %}
   <a href="/exambookings/home"><div class="threecol button">Home</div></a>
   <a href="/exambookings/signup"><div class="threecol button">Sign Up</div></a>
-  <div class="sixcol last">&nbsp;</div>
+  <div class="sixcol last" style="padding-top: 1.5ex;">
+    {% if user_name_verbose %}
+    Hi {{ user_name_verbose }}
+    {% endif %}
+    &nbsp;
+  </div>
   {% endif %}
 </div>
