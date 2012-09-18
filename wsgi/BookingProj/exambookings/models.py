@@ -273,6 +273,7 @@ class Booking(models.Model):
     otherAllowances = models.CharField(max_length=200, blank=True, verbose_name="Other Allowances")
 
     testCompleted = models.BooleanField(verbose_name="Test Taken")
+    noShow = models.BooleanField(verbose_name="No Show")
 
     class Meta:
         permissions = (
@@ -342,7 +343,8 @@ class Booking(models.Model):
                 'computerInternetAllowance',
                 'englishDictionaryThesaurusAllowance',
                 'otherAllowances',
-                'testCompleted']
+                'testCompleted',
+                'noShow']
 
     def fieldDataOf(self, fieldNameStr):
         f = self._meta.get_field(fieldNameStr)
@@ -419,6 +421,11 @@ class Booking(models.Model):
                                                       'verbose_name': "Test Taken",
                                                       'help_text': '',
                                                       'name': 'setCompletedUrl'},
+                                  'setNoShowUrl': {'value':reverse('set_no_show',
+                                                                   kwargs={'pk':booking.pk}),
+                                                   'verbose_name': "No Show",
+                                                   'help_text': '',
+                                                   'name': 'setNoShowUrl'},
                                   'deleteUrl': {'value':reverse('delete_booking',
                                                                 kwargs={'pk':booking.pk}),
                                                 'verbose_name': "Delete Booking",
@@ -435,7 +442,7 @@ class Booking(models.Model):
         """
         aPeriodStart = Period.startTimeOfPeriodIdOnDay(aPeriodId, aDatetime)
         aPeriodEnds = Period.nextPeriodStartTimeOfPeriodIdOnDay(aPeriodId, aDatetime)
-        return cls.objects.filter(testDate=aDatetime, testCompleted=False).filter(Q(testBeginTime__gte=aPeriodStart, testBeginTime__lt=aPeriodEnds) | Q(testEndTime__gt=aPeriodStart, testEndTime__lte=aPeriodEnds) | Q(testBeginTime__lt=aPeriodStart, testEndTime__gt=aPeriodEnds)).count()
+        return cls.objects.filter(testDate=aDatetime, testCompleted=False, noShow=False).filter(Q(testBeginTime__gte=aPeriodStart, testBeginTime__lt=aPeriodEnds) | Q(testEndTime__gt=aPeriodStart, testEndTime__lte=aPeriodEnds) | Q(testBeginTime__lt=aPeriodStart, testEndTime__gt=aPeriodEnds)).count()
 
     @classmethod
     def apptStats(cls, days = 1, showApptsAvailable = False, verbosePeriodName = True):

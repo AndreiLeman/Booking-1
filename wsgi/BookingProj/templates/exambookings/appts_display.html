@@ -26,6 +26,10 @@
       {% csrf_token %}
       <input class="Button" type="submit" value="Test Completed" />
     </form>
+    <form class="OneClickActions" method="post" action="{{ booking.meta.setNoShowUrl.value }}">
+      {% csrf_token %}
+      <input class="Button" type="submit" value="No Show" />
+    </form>
     <form class="OneClickActions" method="get" action="{{ booking.meta.deleteUrl.value }}">
       <input class="Button" type="submit" value="Delete" />
     </form>
