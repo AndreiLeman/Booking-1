@@ -1,11 +1,12 @@
-<div class="twocol logo_graphic"><img src="/static/img/title1.png"/></div>
+<div class="twocol logo_graphic"><b> <font color="#DCBA4F">EM</font><font color="white">HIGH BOOKIT</font></div>
 
 <div class="tencol last nav_bar">
   {% if user_logged_in %}
-  <a href="/exambookings/booking"><div class="threecol button">Book an Exam</div></a>
-  <a href="/exambookings/signout"><div class="threecol button">Sign Out</div></a>
-  <a href="/exambookings/accounts"><div class="threecol button">Edit Account</div></a>
-  <div class="threecol last" style="padding-top: 1.5ex;">
+  <a href="/exambookings/booking"><div class="header_button button">Book an Exam</div></a>
+ <a href="/exambookings/accounts"><div class="header_button button">Edit Account</div></a>
+ <a href="/exambookings/signout"><div class="header_button button">Sign Out</div></a>
+  
+  <div class="twocol" style="padding-top: 1.5ex; padding-left: 2.0ex;">
     {% if user_name_verbose %}
     Hi {{ user_name_verbose }}
     {% endif %}

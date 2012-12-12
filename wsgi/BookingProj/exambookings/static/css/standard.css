@@ -67,13 +67,13 @@
 .submit {
     text-align: center;
     float: none;
-    background-color: blue;
+    background-color: #003366;
 }
 
 .submit1 {
     text-align: center;
     float: none;
-    background-color: blue;
+    background-color: #003366;
     -moz-border-radius-bottomleft: 10px;
     -webkit-border-bottom-left-radius: 10px;
     -moz-border-radius-bottomright: 10px;
@@ -86,7 +86,7 @@
 
 .chromeframe {
     margin: 0.2em 0;
-    background: #ccc;
+    background-color: #003366;
     color: black;
     padding: 0.2em 0;
     font-size: 16pt;
@@ -101,15 +101,23 @@
 }*/
 
 .logo_title_bar {
-    background-color: silver;
+    background-color: #003366;
+    height: 50pt;
 }
 
 
 .logo_graphic {
-	padding-top: 1%;
-        height: 50px;
-        background-color: silver;/* just to show you the display box */
+        padding-top: 15px;
+        padding-left: 11px;
+        height: 10px;
+        background-color: #003366;/* just to show you the display box */
         text-align: center;
+        font-family: arial;
+        font-size: 15pt;
+}
+
+.logo_graphic img {
+    height: 80px;
 }
 
 /*.company_name {
@@ -124,21 +132,26 @@
    Navigation
    ========================================================================== */
    
+.header_button {
+    width: 15%;
+    float: left; 
+    margin-left: 5px;
+    margin-right: 5px;
+    margin-top: 10px;
+}
+
 .nav_bar {
+    font-family: arial;
+    color: #DCBA4F;
             
 }
 
-.navbar_button {
-/*	border: black 1pt solid;*/
-        /*margin: 1px/* just to show you the display box */
-}
 
 
 .body_row {
-	border: black 1pt solid;
-        background-color: white;
+        background-color: #003366;
         padding-left: 1%;
-        font-family: 'Quando', serif;
+        font-family: 'arial', serif;
         
         
         
@@ -146,8 +159,9 @@
 }
 
 .left_col {
-	border: black 1pt solid;
-        background-color: lightgrey;
+	border: #DCBA4F 2pt solid;
+	color: #DCBA4F;
+        background-color: #003366 ;
         text-align: center;
         margin-top: 1%;
         margin-bottom: 1%;
@@ -155,15 +169,15 @@
         -moz-border-radius: 10px;
         -webkit-border-radius: 10px;
         border-radius: 10px;
-        border: 1px solid;
         font-family: arial;
         
         
 }
 
 .student1 {
-        border: black 1pt solid;
-        background-color: lightgrey;
+        border: #DCBA4F 1pt solid;
+	    color: #DCBA4F;
+        background-color: #003366;
         text-align: center;
         font-weight: bold;
         margin-top: 1%;
@@ -171,15 +185,15 @@
         -moz-border-radius: 10px;
         -webkit-border-radius: 10px;
         border-radius: 10px;
-        border: 1px solid;
         font-family: arial;
         
     
 }
 
 .teacher1 {
-        border: black 1pt solid;
-        background-color: lightgray;
+        border: #DCBA4F 1pt solid;
+	color: #DCBA4F; 
+        background-color: #003366;
         text-align: center;
         font-weight: bold;
         margin-top: 1%;
@@ -188,15 +202,15 @@
         -moz-border-radius: 10px;
         -webkit-border-radius: 10px;
         border-radius: 10px;
-        border: 1px solid;
         font-family: arial;
         
     
 }
 
 .student2 {
-        border: black 1pt solid;
-        background-color: lightgray;
+        border: #DCBA4F 1pt solid;
+	color: #DCBA4F;
+        background-color: #003366;
         text-align: center;
         font-weight: bold;
         margin-top: 1%;
@@ -204,13 +218,13 @@
         -moz-border-radius: 10px;
         -webkit-border-radius: 10px;
         border-radius: 10px;
-        border: 1px solid;
         font-family: arial;
 }
 
 .teacher2 {
-        border: black 1pt solid;
-        background-color: lightgray;
+        border: #DCBA4F 1pt solid;
+	color: #DCBA4F;
+        background-color: #003366;
         text-align: center;
         font-weight: bold;
         margin-top: 1%;
@@ -219,13 +233,13 @@
         -moz-border-radius: 10px;
         -webkit-border-radius: 10px;
         border-radius: 10px;
-        border: 1px solid;
         font-family: arial;
 }
 
 .student3 {
-        border: black 1pt solid;
-        background-color: lightgray;
+        border: #DCBA4F 1pt solid;
+	color: #DCBA4F;
+        background-color: #003366;
         text-align: center;
         font-weight: bold;
         margin-top: 1%;
@@ -233,33 +247,31 @@
         -moz-border-radius: 10px;
         -webkit-border-radius: 10px;
         border-radius: 10px;
-        border: 1px solid;
         font-family: arial;
 }
 
 .right_col {
-        
-	border: black 1pt solid;
-        background-color: lightgray;
+        color: #DCBA4F;
+	border: #DCBA4F 1pt solid;
+        background-color: #003366;
         margin-top: 1%;
         margin-bottom: 1%;
         -moz-border-radius: 10px;
         -webkit-border-radius: 10px;
         border-radius: 10px;
-        border: 1px solid;
-        font-family: cool_font;
+        font-family: arial;
         
 }
 
 .footer_bar {
 	text-align: center;
-        background-color: silver;
+        background-color: #003366;
         -moz-border-radius-bottomleft: 10px;
         -webkit-border-bottom-left-radius: 10px;
         -moz-border-radius-bottomright: 10px;
         -webkit-border-bottom-right-radius: 10px;
-        font-family: cool_font;
-        color: white;
+        font-family: arial;
+        color: #DCBA4F;
        
         
 }
@@ -270,7 +282,7 @@
     padding-bottom: 5%;
     font-size: 25px;
     font-weight: bold;
-    font-family: 'Shadows+Into+Light+Two';
+    font-family: arial;
 }
 
 .welcometext {
@@ -371,22 +383,22 @@
    }*/
 
 .button {
-   border-top: 1px solid silver;
-   background: silver;
-   background: -webkit-gradient(linear, left top, left bottom, from(silver), to(silver));
+   border: 2pt #DCBA4F solid;
+   background: #003366;
+  /* background: -webkit-gradient(linear, left top, left bottom, from(silver), to(silver));
    background: -webkit-linear-gradient(top, silver, silver);
    background: -moz-linear-gradient(top, silver, silver);
    background: -ms-linear-gradient(top, silver, silver);
-   background: -o-linear-gradient(top, silver, silver);
+   background: -o-linear-gradient(top, silver, silver); */
    padding: 5px 10px;
    -webkit-border-radius: 4px;
    -moz-border-radius: 4px;
    border-radius: 4px;
-   -webkit-box-shadow: rgba(0,0,0,1) 0 1px 0;
+   /*-webkit-box-shadow: rgba(0,0,0,1) 0 1px 0;
    -moz-box-shadow: rgba(0,0,0,1) 0 1px 0;
    box-shadow: rgba(0,0,0,0) 0 1px 0;
-   text-shadow: rgba(0,0,0,.4) 0 1px 0;
-   color: white;
+   text-shadow: rgba(0,0,0,.4) 0 1px 0; */
+   color: #DCBA4F;
    font-size: 18px;
    font-family: Helvetica, Arial, Sans-Serif;
    text-decoration: none;
@@ -396,8 +408,8 @@
    vertical-align: middle;
    }
 .button:hover {
-   border-top-color: blue;
-   background: blue;
+   border-top-color: #003366;
+   background: #DCBA4F;
    color: white;
    }
 .button:active, .current_page {
