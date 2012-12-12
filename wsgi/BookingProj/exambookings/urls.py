@@ -45,4 +45,7 @@ urlpatterns = patterns('',
                        url(r'^booking/delete/(?P<pk>\d+)/$',
                            'exambookings.views.delete_booking_view',
                            name='delete_booking'),
+		       url(r'^check_booking/$',
+                           'exambookings.views.check_booking',
+                           name='check_booking'),
 )
