@@ -11,7 +11,7 @@ from django.db.models import Q
 import datetime
 ONE_DAY = datetime.timedelta(days=1)
 
-EXAM_CENTER_RM_100_CAPACITY = 30
+EXAM_CENTER_RM_100_CAPACITY = 20
 
 
 
