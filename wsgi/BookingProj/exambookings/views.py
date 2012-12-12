@@ -20,7 +20,8 @@ import datetime
 @staff_only_view
 def context_for_create_or_check_booking(request):
     """ shows bookings available to be seen by logged-in user
-    also provides a form to create a new booking appointment
+    also provides a form to create a new booking appointment.
+    return 0 if caller should redirect to another page without context
     """
     ctx = create_standard_csrf_context(request)
     ctx['bookings_list'] = Booking.getAllObjectsDataNormalizedForUser(request.user) #bookings_list_for(request.user, orderedFields = True)
@@ -48,7 +49,7 @@ def context_for_create_or_check_booking(request):
         # save()ing
         if form.is_valid():
             form.save()
-            return HttpResponseRedirect(reverse('create_booking'))
+            return 0
     
     ctx['form'] = form
     ctx['form_fields_groups'] = form_fields_groups_for_view(request.user, form)
@@ -60,6 +61,8 @@ def create_booking_view(request):
     also provides a form to create a new booking appointment
     """
     ctx = context_for_create_or_check_booking(request)
+    if (ctx == 0):
+        return HttpResponseRedirect(reverse('create_booking'))
     return render_to_response('exambookings/booking.html', ctx)
     
 @staff_only_view
@@ -210,6 +213,8 @@ def check_booking(request):
     also provides a form to create a new booking appointment
     """
     ctx = context_for_create_or_check_booking(request)
+    if (ctx == 0):
+        return HttpResponseRedirect(reverse('create_booking'))
     return render_to_response('exambookings/check_booking.html', ctx)
 
 
