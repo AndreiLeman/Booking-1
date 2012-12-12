@@ -18,7 +18,7 @@ from exambookings.viewsHelpers import *
 import datetime
 
 @staff_only_view
-def create_booking_view(request):
+def context_for_create_or_check_booking(request):
     """ shows bookings available to be seen by logged-in user
     also provides a form to create a new booking appointment
     """
@@ -52,9 +52,16 @@ def create_booking_view(request):
     
     ctx['form'] = form
     ctx['form_fields_groups'] = form_fields_groups_for_view(request.user, form)
+    return ctx
+    
+@staff_only_view
+def create_booking_view(request):
+    """ shows bookings available to be seen by logged-in user
+    also provides a form to create a new booking appointment
+    """
+    ctx = context_for_create_or_check_booking(request)
     return render_to_response('exambookings/booking.html', ctx)
-
-
+    
 @staff_only_view
 @authorized_user_of_this_booking_only_view
 def update_booking_view(request, pk):
@@ -197,6 +204,14 @@ def home_page_view(request):
                                 template_name='exambookings/home.html',
                                 extra_context=ctx,
                                 auth_form=ExamBookingAuthForm)
+@staff_only_view
+def check_booking(request):
+    """ shows bookings available to be seen by logged-in user
+    also provides a form to create a new booking appointment
+    """
+    ctx = context_for_create_or_check_booking(request)
+    return render_to_response('exambookings/check_booking.html', ctx)
+
 
 
 def team_bio_view(request):

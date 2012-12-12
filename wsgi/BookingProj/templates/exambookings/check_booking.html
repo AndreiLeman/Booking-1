@@ -12,6 +12,7 @@
 
         <title>Booking</title>
 
+
         <!-- In case user doesn't install Google Chrome Frame: -->
         <!--[if lte IE 8]>
             <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -49,47 +50,14 @@
 	  {% include "exambookings/logo_title_bar.html" %}	  
         </div>
 
-       
+        <div class="row body_row">
+            <div class="twelevecol last left_col">
+              <p>&nbsp;</p>
+	      {% include "exambookings/appts_display.html" %}
+              <p>&nbsp;</p>
+            </div>
 
-            <div class="twelevecol last right_col">
-	      <form class="ApptEditForm" method="post" action="">
-		<h3>Create Appointment</h3>		
-		{% include "exambookings/appt_edit_form_body.html" %}
-<div class="apptStatsBox">
-		<h2>Spaces Available</h2>
-		<p>As of {{ refreshTime }}.</p>
-		<p>This does not show periods tumbling!!</p>
-		<ol class="apptStats">
-		  <ol class="day rowHeaders">
-		    <li class="period colHeader"></li>
-		    {% for period in availableAppts.0.stats %}
-		    <li class="period">
-		      {{ period.periodName }}
-		    </li>
-		    {% endfor %}
-		  </ol>
-		  
-		  {% for day in availableAppts %}
-		  <ol class="day rowHeader">
-		    <li class="period colHeader">{{ day.date.month }}/{{ day.date.day }}</li>
-		    {% for period in day.stats %}
-		    <li class="period">
-		      {{ period.apptCount }}
-		    </li>
-		    {% endfor %}
-		  </ol>
-		  {% endfor %}
-		</ol>
-	      </div>
-            </div>      
-        </div>
-		<div class="submit1">
-		  <label for="submit_id">
-		    <input type="submit" id="submit_id" value="Create Appointment" /></label>
-		</div>
-	      </form>
-	    
-	      
+            
         <div class="row footer_bar">
 	  {% include "exambookings/footer_bar.html" %}
         </div>
